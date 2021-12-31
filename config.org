@@ -1,0 +1,237 @@
+#+TITLE: Doom Emacs Konfiguration
+#+AUTHOR: Stefan Schuh
+
+* Allgemein
+** Header :noexport:
+#+begin_src emacs-lisp
+;;; config.el -*- lexical-binding: t; -*-
+#+end_src
+** Userinfo
+#+begin_src elisp
+;; Some functionality uses this to identify you, e.g. GPG configuration, email
+;; clients, file templates and snippets.
+(setq user-full-name "Stefan Schuh"
+      user-mail-address "stefan@schuhu.at")
+#+end_src
+
+* UI
+** Theme
+#+begin_src elisp
+(setq doom-theme 'doom-monokai-classic)
+#+end_src
+** Window selection
+In =init.el= habe ich =(window-select +numbers)= aktiviert. Window selection geht nun über =SPC w {n}=, wobei =n= die Nummer des Fensters ist.
+
+*** Ace Window
+Als erstes brauchen wir =other-window= auf einer gut erreichbaren Stelle. =SPC w p= ist derzeit mit =evil-window-mru= belegt, einer Funktion, die ich noch nie verwendet habe. Weg damit, sie hat eh noch ein zweites Binding (=SPC w C-p=).
+
+#+begin_src elisp
+(map! :leader
+      :desc "window switcher" "w p" #'other-window)
+#+end_src
+
+Macht die Hints von =ace-window= größer und bunter. Viel besser zu sehen. Das Snippet ist direkt aus der Dokumentation des Moduls =window-select=: https://github.com/hlissner/doom-emacs/tree/develop/modules/ui/window-select
+
+#+begin_src elisp
+(custom-set-faces!
+  '(aw-leading-char-face
+    :foreground "black" :background "#F92660"
+    :weight bold :height 2.5 :box (:line-width 10 :color "#F92660")))
+#+end_src
+**** TODO aw-leading-char-face automatisch an Theme anpassen
+
+* Keybindings
+** Vim Stuff
+*** Leader, localleader, ex
+Die Umlaute liegen auf meiner Tastatur (xoy) ganz gut, aber für den Doppelpunkt brauche ich die Umschalttaste. Daher scheint es mir eine gute Idee zu sein, wichtige Funktionen, die auf einer englischen Tastatur gut liegen, hierher zu binden.
+
+Bisher hatte ich das Komme als localleader. Allerdings kollidiert das mit einem Vim-Befehl, den ich mir vielleicht angewöhnen möchte. Das "ü" ist genauso bequem zu erreichen wie der Beistrich und hat naheliegenderweise keine Kollisionen:
+#+begin_src elisp
+(setq doom-localleader-key "ü")
+#+end_src
+
+Außerdem möchte ich das "ä" für =evil-ex=, weil, wie gesagt, der Doppelpunkt auf meinen Tastatur weit schlechter zu erreichen ist.
+#+begin_src elisp
+(map! :map global-map
+      :desc "ex"
+      :nv "ä" #'evil-ex)
+#+end_src
+
+Außerdem komme ich von Spacemacs, daher möchte ich =M-x= auf =SPC SPC= haben
+#+begin_src elisp
+(map! :leader
+      :desc "M-x" "SPC" #'execute-extended-command)
+#+end_src
+
+* org-mode
+** Allgemein
+Der Ordner, in dem meine org-files wohnen und wo die Attachments hingehen:
+#+begin_src elisp
+(setq org-directory "~/Nextcloud/org")
+#+end_src
+*** org-attach
+#+begin_src elisp
+(setq org-attach-id-dir "~/Nextcloud/org/attach")
+#+end_src
+** Keybindings
+=C-c C-c= auf =localleader localleader=. In meiner derzeitigen Konfiguration heißt das =ü ü=.
+#+begin_src elisp
+(map! :after org
+      :map org-mode-map
+      :localleader
+      doom-localleader-key #'org-ctrl-c-ctrl-c)
+#+end_src
+** TODO org-roam
+
+* Email
+Ich benutze =mu4e= für meine Mails. Die Synchronisierung der Mails läuft über =mbsync=.
+
+- Doku zum Doom-Modul :: [[file:~/doom-emacs/modules/email/mu4e/README.org::+TITLE: email/mu4e][email/mu4e/README.org]]
+** Main view
+*** Shortcuts zu den wichtigsten Ordnern
+#+NAME: mu4e-maildir-shortcuts
+#+begin_src elisp :tangle no
+(setq mu4e-maildir-shortcuts
+        '(("/uni/INBOX" . ?i)
+          ("/schuhu/INBOX" . ?s)
+          ("/gmail/INBOX" . ?g)
+          ))
+
+#+end_src
+** Allgemeine Konfiguration
+#+NAME: mail-general
+#+begin_src elisp :tangle no
+(setq
+ mu4e-confirm-quit nil ; quit without asking
+ mu4e-attachment-dir "~/Downloads"
+ mu4e-maildir (expand-file-name "~/Maildir")
+ mu4e-get-mail-command "mbsync schuhu uni gmail"
+ sendmail-program (executable-find "msmtp")
+ send-mail-function #'smtpmail-send-it
+ message-sendmail-f-is-evil t
+ message-sendmail-extra-arguments '("--read-envelope-from")
+ message-send-mail-function #'message-send-mail-with-sendmail)
+
+#+end_src
+** Konten einrichten
+#+NAME: mail-accounts
+#+begin_src elisp :tangle no
+    (set-email-account! "schuhu"
+                        '((mu4e-sent-folder . "/schuhu/Gesendet")
+                          (mu4e-drafts-folder . "/schuhu/Drafts")
+                          (mu4e-trash-folder . "/schuhu/Papierkorb")
+                          (mu4e-refile-folder . "/schuhu/Archiv")
+                          (user-mail-address . "stefan@schuhu.at")
+                          (user-full-name . "Stefan Schuh")
+                          ( mu4e-compose-signature . (concat
+                                               "Stefan Schuh\n"
+                                               "Maria-Pachleitner-Straße 51/10\n"
+                                               "8053 Graz"))))
+
+    (set-email-account! "uni"
+                        '(( user-mail-address	     . "stefan.schuh@uni-graz.at" )
+                        ( user-full-name	     . "Stefan Schuh" )
+                        ( mu4e-compose-signature  .   (concat
+                                                        "Mag. Stefan Schuh (B.A.)   https://ub.uni-graz.at/\n"
+                                                        "mailto:stefan.schuh@uni-graz.at fon:+43-316-380-1461\n"
+                                                        "Universitätsbibliothek Graz, Medienbearbeitung:\n"
+                                                        "Universitätsplatz 3a, 8010 Graz"))
+                        ;; special folders
+                        (mu4e-drafts-folder . "/uni/drafts")
+                        (mu4e-sent-folder . "/uni/sent")
+                        (mu4e-trash-folder . "/uni/trash")))
+    (set-email-account! "gmail"
+                        '((user-mail-address . "stefan.schuh.ba@gmail.com")
+                          (user-full-name . "Stefan Schuh")
+                          (mu4e-drafts-folder . "/gmail/drafts")
+                          (mu4e-sent-folder . "/gmail/sent")
+                          (mu4e-trash-folder ."/gmail/trash")
+                          ))
+#+end_src
+
+#+RESULTS: mail-accounts
+
+** Kontexte
+Hier muss in Doom Emacs offenbar nicht so viel gemacht werden. Durch das einrichten der Accounts mit dem Makro ~set-email-account!~ funktioniert das Umschalten der Kontexte ohne weitere Konfiguration bisher völlig zu meiner Zufriedenheit.
+
+** msmtp verwenden um Mails zu versenden
+Ich habe msmtp nach diesem Tutorial eingerichtet: https://decatec.de/linux/linux-einfach-e-mails-versenden-mit-msmtp/.
+
+*** msmtp-Setup
+Als erstes braucht man =msmtp=:
+
+#+begin_src bash :tangle no
+sudo apt install msmtp msmtp-mta
+#+end_src
+
+Die Konfiguration für msmtp ist in =~/.msmtprc=. Aus irgendeinem Grund funktioniert es nicht, wenn die =~/.msmptrc= ein Symlink ist.
+
+Hier ist meine Variante (ohne die erklärenden Kommentare der Beispielversion):
+
+#+begin_src
+# ~/.msmtprc
+# common for all accounts
+defaults
+port 587
+tls on
+
+# schuhu
+account schuhu
+host smtp.cdx.at
+from stefan@schuhu.at
+auth on
+user stefan@schuhu.at
+
+# uni
+account uni
+host email.uni-graz.at
+from stefan.schuh@uni-graz.at
+auth on
+user stefan.schuh@uni-graz.at
+
+# gmail
+account gmail
+host smtp.gmail.com
+from stefan.schuh.ba@gmail.com
+auth on
+user stefan.schuh.ba@gmail.com
+
+# set a default account
+account default: schuhu
+#+end_src
+
+
+**** Authentifizierung und =.netrc=
+Im Paket, das in den Quellen für Ubuntu 20.04 (=msmtp vesnion 1.8.6=) ist, funktioniert der Keyring in Kubuntu nicht. Weil ich =msmtp-gnome= in Kubuntu nicht installieren will (viele gnome-Pakete, die ich eigentlich nicht brauche), verwende ich eine =.netrc=, obwohl das keine gute Praxis ist.
+
+Hier zu meiner Erinnerung ein Beispiel für =.netrc=:
+#+begin_src
+# ~/.netrc
+
+machine smtp.cdx.at
+  login stefan@schuhu.at
+  password ****
+
+machine email.uni-graz.at
+  login stefan.schuh@uni-graz.at
+  password ****
+
+machine smtp.gmail.com
+  login stefan.schuh.ba@gmail.com
+  password ****
+#+end_src
+**** TODO Wenn verfügbar auf Keyring umbauen
+Upstream (Debian) scheint das Paket nun =secret-service= zu unterstützen und nicht auf gnome-libraries angewiesen zu sein. Mal sehen, ob die nächste Ubuntu LTS ~msmtp >= 1.8.11~ hat. Falls ja, versuche ich die Authentifizierung über den Keyring zu machen, um keine Passwörter mehr in Plaintext-Files zu haben.
+
+** Alles zusammensetzen :noexport:
+Hier die Mail-Konfiguration als ganzes:
+#+NAME: mail
+#+begin_src elisp :noweb yes
+(after! mu4e
+   ;; load package to be able to capture emails for GTD
+   (require 'org-mu4e)
+   <<mu4e-maildir-shortcuts>>
+   <<mail-general>>
+   <<mail-accounts>>
+   )
+#+end_src
