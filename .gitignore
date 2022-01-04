@@ -4,4 +4,4 @@
 tmp/
 .directory
 
-init.el
+config.el
