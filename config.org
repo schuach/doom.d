@@ -98,20 +98,43 @@ Ich benutze =mu4e= für meine Mails. Die Synchronisierung der Mails läuft über
           ))
 
 #+end_src
+*** Bullets
+Mir gefallen die bullets im main view noch weniger als die ursprünglichen Sternchen. Außerdem stehen im Bereich "Basics" immer noch die Sternchen. Also machen wir wieder Sternchen, damit es konsistent ist.
+#+NAME: bullets
+#+begin_src elisp :tangle no
+(setq +mu4e-main-bullet "*")
+#+end_src
+
+**** TODO herausfinden, warum ~+mu4e-main-bullet~ im Bereich "Basics" nicht verwendet wird
+Sobald ich das weiß, kann ich mich um ein anderes Symbol kümmern. So ist es inkonsistent und das ist (für mich) schlimmer als hässlich.
+
+
 ** Allgemeine Konfiguration
 #+NAME: mail-general
 #+begin_src elisp :tangle no
 (setq
  mu4e-confirm-quit nil ; quit without asking
+ mu4e-use-fancy-chars nil ; don't use icons, they mess up the linespacing
  mu4e-attachment-dir "~/Downloads"
  mu4e-maildir (expand-file-name "~/Maildir")
  mu4e-get-mail-command "mbsync schuhu uni gmail"
+ mu4e-update-interval 180 ;; check for mail every 3 minutes
  sendmail-program (executable-find "msmtp")
  send-mail-function #'smtpmail-send-it
  message-sendmail-f-is-evil t
  message-sendmail-extra-arguments '("--read-envelope-from")
  message-send-mail-function #'message-send-mail-with-sendmail)
+#+end_src
 
+In der ursprünglichen Einstellung hat das Datum im header-view keinen Platz.
+#+NAME: headers-fields
+#+begin_src elisp :tangle no
+(setq mu4e-headers-fields
+        '((:account-stripe . 1)
+          (:human-date . 10)
+          (:flags . 6) ; 3 icon flags
+          (:from-or-to . 25)
+          (:subject)))
 #+end_src
 ** Konten einrichten
 #+NAME: mail-accounts
@@ -148,8 +171,6 @@ Ich benutze =mu4e= für meine Mails. Die Synchronisierung der Mails läuft über
                           (mu4e-trash-folder ."/gmail/trash")
                           ))
 #+end_src
-
-#+RESULTS: mail-accounts
 
 ** Kontexte
 Hier muss in Doom Emacs offenbar nicht so viel gemacht werden. Durch das einrichten der Accounts mit dem Makro ~set-email-account!~ funktioniert das Umschalten der Kontexte ohne weitere Konfiguration bisher völlig zu meiner Zufriedenheit.
@@ -231,7 +252,9 @@ Hier die Mail-Konfiguration als ganzes:
    ;; load package to be able to capture emails for GTD
    (require 'org-mu4e)
    <<mu4e-maildir-shortcuts>>
+   <<bullets>>
    <<mail-general>>
    <<mail-accounts>>
+   <<headers-fields>>
    )
 #+end_src
