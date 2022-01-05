@@ -14,15 +14,15 @@
       user-mail-address "stefan@schuhu.at")
 #+end_src
 
-* UI
-** Theme
+** UI
+*** Theme
 #+begin_src elisp
 (setq doom-theme 'doom-monokai-classic)
 #+end_src
-** Window selection
+*** Window selection
 In =init.el= habe ich =(window-select +numbers)= aktiviert. Window selection geht nun über =SPC w {n}=, wobei =n= die Nummer des Fensters ist.
 
-*** Ace Window
+**** Ace Window
 Als erstes brauchen wir =other-window= auf einer gut erreichbaren Stelle. =SPC w p= ist derzeit mit =evil-window-mru= belegt, einer Funktion, die ich noch nie verwendet habe. Weg damit, sie hat eh noch ein zweites Binding (=SPC w C-p=).
 
 #+begin_src elisp
@@ -38,11 +38,11 @@ Macht die Hints von =ace-window= größer und bunter. Viel besser zu sehen. Das 
     :foreground "black" :background "#F92660"
     :weight bold :height 2.5 :box (:line-width 10 :color "#F92660")))
 #+end_src
-**** TODO aw-leading-char-face automatisch an Theme anpassen
+***** TODO aw-leading-char-face automatisch an Theme anpassen
 
-* Keybindings
-** Vim Stuff
-*** Leader, localleader, ex
+** Keybindings allgemein
+*** Vim Stuff
+**** Leader, localleader, ex
 Die Umlaute liegen auf meiner Tastatur (xoy) ganz gut, aber für den Doppelpunkt brauche ich die Umschalttaste. Daher scheint es mir eine gute Idee zu sein, wichtige Funktionen, die auf einer englischen Tastatur gut liegen, hierher zu binden.
 
 Bisher hatte ich das Komme als localleader. Allerdings kollidiert das mit einem Vim-Befehl, den ich mir vielleicht angewöhnen möchte. Das "ü" ist genauso bequem zu erreichen wie der Beistrich und hat naheliegenderweise keine Kollisionen:
