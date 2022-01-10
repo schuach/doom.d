@@ -85,6 +85,18 @@ Der Ordner, in dem meine org-files wohnen und wo die Attachments hingehen:
 * Sprachen
 ** LSP allgemein
 In =init.el= habe ich ~lsp~ aktiviert. Bei den entsprechenden Sprachen ist dementsprechend auch das Flag ~lsp~ zu setzen.
+** Common Lisp
+:PROPERTIES:
+:LAST_EDIT: 2021-01-10
+:END:
+Weil ich das Buch "Land of Lisp" durcharbeite, habe ich in =init.el= auch das entsprechende Modul (~common-lisp~) aktiviert.
+
+Das Buch geht davon aus, dass ich =CLISP= als Interpreter verwende, nicht wie vom Modul vorgesehen =SBCL=. Kein Problem:
+
+#+begin_src elisp
+(setq inferior-lisp-program "clisp")
+#+end_src
+
 
 ** python
 *** Formatter
