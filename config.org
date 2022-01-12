@@ -63,25 +63,6 @@ Außerdem komme ich von Spacemacs, daher möchte ich =M-x= auf =SPC SPC= haben
       :desc "M-x" "SPC" #'execute-extended-command)
 #+end_src
 
-* org-mode
-** Allgemein
-Der Ordner, in dem meine org-files wohnen und wo die Attachments hingehen:
-#+begin_src elisp
-(setq org-directory "~/Nextcloud/org")
-#+end_src
-*** org-attach
-#+begin_src elisp
-(setq org-attach-id-dir "~/Nextcloud/org/attach")
-#+end_src
-** Keybindings
-=C-c C-c= auf =localleader localleader=. In meiner derzeitigen Konfiguration heißt das =ü ü=.
-#+begin_src elisp
-(map! :after org
-      :map org-mode-map
-      :localleader
-      doom-localleader-key #'org-ctrl-c-ctrl-c)
-#+end_src
-
 * Sprachen
 ** LSP allgemein
 In =init.el= habe ich ~lsp~ aktiviert. Bei den entsprechenden Sprachen ist dementsprechend auch das Flag ~lsp~ zu setzen.
@@ -97,6 +78,25 @@ Das Buch geht davon aus, dass ich =CLISP= als Interpreter verwende, nicht wie vo
 (setq inferior-lisp-program "clisp")
 #+end_src
 
+
+** org-mode
+*** Allgemein
+Der Ordner, in dem meine org-files wohnen und wo die Attachments hingehen:
+#+begin_src elisp
+(setq org-directory "~/Nextcloud/org")
+#+end_src
+**** org-attach
+#+begin_src elisp
+(setq org-attach-id-dir "~/Nextcloud/org/attach")
+#+end_src
+*** Keybindings
+=C-c C-c= auf =localleader localleader=. In meiner derzeitigen Konfiguration heißt das =ü ü=.
+#+begin_src elisp
+(map! :after org
+      :map org-mode-map
+      :localleader
+      doom-localleader-key #'org-ctrl-c-ctrl-c)
+#+end_src
 
 ** python
 *** Formatter
@@ -117,13 +117,13 @@ sudo apt install tidy
 ** XML
 *** LSP
 Von ~(web +lsp)~ wird auch in ~nXML-mode~ LSP kofiguriert und beim ersten Start der xmlls installiert.
-
-* Email
+* app
+** Email
 Ich benutze =mu4e= für meine Mails. Die Synchronisierung der Mails läuft über =mbsync=.
 
 - Doku zum Doom-Modul :: [[file:~/doom-emacs/modules/email/mu4e/README.org::+TITLE: email/mu4e][email/mu4e/README.org]]
-** Main view
-*** Shortcuts zu den wichtigsten Ordnern
+*** Main view
+**** Shortcuts zu den wichtigsten Ordnern
 #+NAME: mu4e-maildir-shortcuts
 #+begin_src elisp :tangle no
 (setq mu4e-maildir-shortcuts
@@ -133,18 +133,18 @@ Ich benutze =mu4e= für meine Mails. Die Synchronisierung der Mails läuft über
           ))
 
 #+end_src
-*** Bullets
+**** Bullets
 Mir gefallen die bullets im main view noch weniger als die ursprünglichen Sternchen. Außerdem stehen im Bereich "Basics" immer noch die Sternchen. Also machen wir wieder Sternchen, damit es konsistent ist.
 #+NAME: bullets
 #+begin_src elisp :tangle no
 (setq +mu4e-main-bullet "*")
 #+end_src
 
-**** TODO herausfinden, warum ~+mu4e-main-bullet~ im Bereich "Basics" nicht verwendet wird
+***** TODO herausfinden, warum ~+mu4e-main-bullet~ im Bereich "Basics" nicht verwendet wird
 Sobald ich das weiß, kann ich mich um ein anderes Symbol kümmern. So ist es inkonsistent und das ist (für mich) schlimmer als hässlich.
 
 
-** Allgemeine Konfiguration
+*** Allgemeine Konfiguration
 #+NAME: mail-general
 #+begin_src elisp :tangle no
 (setq
@@ -171,7 +171,7 @@ In der ursprünglichen Einstellung hat das Datum im header-view keinen Platz.
           (:from-or-to . 25)
           (:subject)))
 #+end_src
-** Konten einrichten
+*** Konten einrichten
 #+NAME: mail-accounts
 #+begin_src elisp :tangle no
     (set-email-account! "schuhu"
@@ -207,13 +207,13 @@ In der ursprünglichen Einstellung hat das Datum im header-view keinen Platz.
                           ))
 #+end_src
 
-** Kontexte
+*** Kontexte
 Hier muss in Doom Emacs offenbar nicht so viel gemacht werden. Durch das einrichten der Accounts mit dem Makro ~set-email-account!~ funktioniert das Umschalten der Kontexte ohne weitere Konfiguration bisher völlig zu meiner Zufriedenheit.
 
-** msmtp verwenden um Mails zu versenden
+*** msmtp verwenden um Mails zu versenden
 Ich habe msmtp nach diesem Tutorial eingerichtet: https://decatec.de/linux/linux-einfach-e-mails-versenden-mit-msmtp/.
 
-*** msmtp-Setup
+**** msmtp-Setup
 Als erstes braucht man =msmtp=:
 
 #+begin_src bash :tangle no
@@ -257,7 +257,7 @@ account default: schuhu
 #+end_src
 
 
-**** Authentifizierung und =.netrc=
+***** Authentifizierung und =.netrc=
 Im Paket, das in den Quellen für Ubuntu 20.04 (=msmtp vesnion 1.8.6=) ist, funktioniert der Keyring in Kubuntu nicht. Weil ich =msmtp-gnome= in Kubuntu nicht installieren will (viele gnome-Pakete, die ich eigentlich nicht brauche), verwende ich eine =.netrc=, obwohl das keine gute Praxis ist.
 
 Hier zu meiner Erinnerung ein Beispiel für =.netrc=:
@@ -276,10 +276,10 @@ machine smtp.gmail.com
   login stefan.schuh.ba@gmail.com
   password ****
 #+end_src
-**** TODO Wenn verfügbar auf Keyring umbauen
+***** TODO Wenn verfügbar auf Keyring umbauen
 Upstream (Debian) scheint das Paket nun =secret-service= zu unterstützen und nicht auf gnome-libraries angewiesen zu sein. Mal sehen, ob die nächste Ubuntu LTS ~msmtp >= 1.8.11~ hat. Falls ja, versuche ich die Authentifizierung über den Keyring zu machen, um keine Passwörter mehr in Plaintext-Files zu haben.
 
-** Alles zusammensetzen :noexport:
+*** Alles zusammensetzen :noexport:
 Hier die Mail-Konfiguration als ganzes:
 #+NAME: mail
 #+begin_src elisp :noweb yes
