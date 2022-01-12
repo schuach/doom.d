@@ -39,6 +39,18 @@ Macht die Hints von =ace-window= größer und bunter. Viel besser zu sehen. Das 
     :weight bold :height 2.5 :box (:line-width 10 :color "#F92660")))
 #+end_src
 ***** TODO aw-leading-char-face automatisch an Theme anpassen
+** Completion
+Ich verwende das =vertico=-Modul.
+*** Embark
+Darin enthalten ist auch =embark=. =embark-act= hat standardmäßig zwei Bindings: =LDR a= und =C-;=. Ersteres ist gut, zweiteres schlecht, weil das Semikolon auf der deutschen Tastatur auf der Umschalt-Ebene liegt. Daher:
+
+#+NAME: remap-embark-act
+#+begin_src elisp
+(map! "C-ö"             #'embark-act
+      (:map minibuffer-local-map
+       "C-ö"            #'embark-act
+       "C-c C-ö"        #'embark-export))
+#+end_src
 
 ** Keybindings allgemein
 *** Vim Stuff
