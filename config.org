@@ -305,3 +305,13 @@ Hier die Mail-Konfiguration als ganzes:
    <<headers-fields>>
    )
 #+end_src
+* tools
+** biblio
+In =init.el= habe ich ~biblio~ aktiviert. Hier nun die entsprechende Konfiguration:
+
+#+NAME: citar-paths
+#+begin_src elisp
+(setq! citar-bibliography '("~/Nextcloud/literatur/bibliographie.bib")
+       citar-library-paths '("~/Nextcloud/literatur/files/")
+       citar-notes-paths '("~/Nextcloud/literatur/notes/"))
+#+end_src
