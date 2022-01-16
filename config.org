@@ -137,6 +137,13 @@ Hier verwende ich derzeit =html-ls=. Formatieren geht über diesen Server nicht,
 #+begin_src bash :tangle no
 sudo apt install tidy
 #+end_src
+*** tidy
+Die Einrückungen in der Standardeinsteillung nicht wirklich (alles unter ~<body>~ ist auf einer Ebene).
+
+#+NAME: html-tidy
+#+begin_src elisp
+(set-formatter! 'html-tidy "tidy -q -indent --indent-spaces 2" :modes '(html-mode web-mode))
+#+end_src
 
 ** XML
 *** LSP
