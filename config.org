@@ -193,7 +193,7 @@ In der ursprünglichen Einstellung hat das Datum im header-view keinen Platz.
                           (mu4e-refile-folder . "/schuhu/Archiv")
                           (user-mail-address . "stefan@schuhu.at")
                           (user-full-name . "Stefan Schuh")
-                          ( mu4e-compose-signature . (concat
+                          (mu4e-compose-signature . (concat
                                                "Stefan Schuh\n"
                                                "Maria-Pachleitner-Straße 51/10\n"
                                                "8053 Graz"))))
@@ -209,7 +209,8 @@ In der ursprünglichen Einstellung hat das Datum im header-view keinen Platz.
                         ;; special folders
                         (mu4e-drafts-folder . "/uni/drafts")
                         (mu4e-sent-folder . "/uni/sent")
-                        (mu4e-trash-folder . "/uni/trash")))
+                        (mu4e-trash-folder . "/uni/trash")
+                        (mu4e-refile-folder . "/uni/Archiv")))
     (set-email-account! "gmail"
                         '((user-mail-address . "stefan.schuh.ba@gmail.com")
                           (user-full-name . "Stefan Schuh")
