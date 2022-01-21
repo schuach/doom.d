@@ -149,8 +149,11 @@ Die Einrückungen in der Standardeinsteillung nicht wirklich (alles unter ~<body
 *** LSP
 Von ~(web +lsp)~ wird auch in ~nXML-mode~ LSP kofiguriert und beim ersten Start der xmlls installiert.
 * app
-** Email
-Ich benutze =mu4e= für meine Mails. Die Synchronisierung der Mails läuft über =mbsync=.
+** E-Mail
+:PROPERTIES:
+:ID:       801f7b26-1410-47be-8521-dc30087364b4
+:END:
+Ich benutze =mu4e= für meine Mails. Die Synchronisierung der Mails läuft über =mbsync=, gesendet werden die mails mit =msmtp=.
 
 - Doku zum Doom-Modul :: [[file:~/doom-emacs/modules/email/mu4e/README.org::+TITLE: email/mu4e][email/mu4e/README.org]]
 *** Main view
@@ -242,74 +245,12 @@ In der ursprünglichen Einstellung hat das Datum im header-view keinen Platz.
 *** Kontexte
 Hier muss in Doom Emacs offenbar nicht so viel gemacht werden. Durch das einrichten der Accounts mit dem Makro ~set-email-account!~ funktioniert das Umschalten der Kontexte ohne weitere Konfiguration bisher völlig zu meiner Zufriedenheit.
 
-*** msmtp verwenden um Mails zu versenden
-Ich habe msmtp nach diesem Tutorial eingerichtet: https://decatec.de/linux/linux-einfach-e-mails-versenden-mit-msmtp/.
-
-**** msmtp-Setup
-Als erstes braucht man =msmtp=:
-
-#+begin_src bash :tangle no
-sudo apt install msmtp msmtp-mta
-#+end_src
-
-Die Konfiguration für msmtp ist in =~/.msmtprc=. Aus irgendeinem Grund funktioniert es nicht, wenn die =~/.msmptrc= ein Symlink ist.
-
-Hier ist meine Variante (ohne die erklärenden Kommentare der Beispielversion):
-
-#+begin_src
-# ~/.msmtprc
-# common for all accounts
-defaults
-port 587
-tls on
-
-# schuhu
-account schuhu
-host smtp.cdx.at
-from stefan@schuhu.at
-auth on
-user stefan@schuhu.at
-
-# uni
-account uni
-host email.uni-graz.at
-from stefan.schuh@uni-graz.at
-auth on
-user stefan.schuh@uni-graz.at
-
-# gmail
-account gmail
-host smtp.gmail.com
-from stefan.schuh.ba@gmail.com
-auth on
-user stefan.schuh.ba@gmail.com
-
-# set a default account
-account default: schuhu
-#+end_src
-
-
-***** Authentifizierung und =.netrc=
-Im Paket, das in den Quellen für Ubuntu 20.04 (=msmtp vesnion 1.8.6=) ist, funktioniert der Keyring in Kubuntu nicht. Weil ich =msmtp-gnome= in Kubuntu nicht installieren will (viele gnome-Pakete, die ich eigentlich nicht brauche), verwende ich eine =.netrc=, obwohl das keine gute Praxis ist.
-
-Hier zu meiner Erinnerung ein Beispiel für =.netrc=:
-#+begin_src
-# ~/.netrc
-
-machine smtp.cdx.at
-  login stefan@schuhu.at
-  password ****
-
-machine email.uni-graz.at
-  login stefan.schuh@uni-graz.at
-  password ****
-
-machine smtp.gmail.com
-  login stefan.schuh.ba@gmail.com
-  password ****
-#+end_src
-***** TODO Wenn verfügbar auf Keyring umbauen
-Upstream (Debian) scheint das Paket nun =secret-service= zu unterstützen und nicht auf gnome-libraries angewiesen zu sein. Mal sehen, ob die nächste Ubuntu LTS ~msmtp >= 1.8.11~ hat. Falls ja, versuche ich die Authentifizierung über den Keyring zu machen, um keine Passwörter mehr in Plaintext-Files zu haben.
+*** Mail senden
+:PROPERTIES:
+:ID:       9dc6ef65-8349-4f76-81ad-cc38b1766a2c
+:END:
+Wie im Block [[mail-general][mail-general]] zu sehen ist, ist werden die Mails über =msmtp= gesendet. Die Konfiguration ist hier: *INSERT LINK*
+**** TODO Link zum =config.org=, sobald diese einen endgültigen Platz hat.
 
 *** Alles zusammensetzen :noexport:
 Hier die Mail-Konfiguration als ganzes:
