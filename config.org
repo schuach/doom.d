@@ -1,5 +1,6 @@
 #+TITLE: Doom Emacs Konfiguration
 #+AUTHOR: Stefan Schuh
+#+STARTUP: content
 
 * Allgemein
 ** Header :noexport:
@@ -122,14 +123,42 @@ Zuerst muss =org-roam= wissen, wo die Dateien sind:
 (setq org-roam-directory "~/Nextcloud/org/org-roam/")
 #+end_src
 
+
+**** org-roam-bibtex
+https://github.com/org-roam/org-roam-bibtex
+Für integration mit =citar= etc.
+
+Zuerst muss einmal das Paket geladen werden, etc. Dazu muss folgendes in =packages.el=:
+
+#+name: org-roam-bibtex-packages
+#+begin_src elisp :tangle no
+(package! org-roam-bibtex
+  :recipe (:host github :repo "org-roam/org-roam-bibtex"))
+
+;; When using org-roam via the `+roam` flag
+(unpin! org-roam)
+
+;; When using bibtex-completion via the `biblio` module
+(unpin! bibtex-completion helm-bibtex ivy-bibtex)
+#+end_src
+
+Und dann noch die Minimalkonfiguration:
+
+#+name: org-roam-bibtex
+#+begin_src elisp
+(use-package! org-roam-bibtex
+  :after org-roam)
+#+end_src
+
 ** python
+*** LSP
+=pyright= benötigt [[file:~/projects/system-config/config.org::*node][node]] > 12.
 *** Formatter
 =pyright= stelt als LSP-server keine Formatierungsfunktion zur Verfügung. Daher muss als Backend für das ~format~ Modul =black= installiert sein:
 
 #+begin_src bash :tangle no
-sudo pip install black
+sudo pip3 install black
 #+end_src
-
 ** web
 *** LSP
 Hier verwende ich derzeit =html-ls=. Formatieren geht über diesen Server nicht, daher muss das Modul ~format~ aktiviert und =tidy= installiert sein:
@@ -275,4 +304,9 @@ In =init.el= habe ich ~biblio~ aktiviert. Hier nun die entsprechende Konfigurati
 (setq! citar-bibliography '("~/Nextcloud/literatur/bibliographie.bib")
        citar-library-paths '("~/Nextcloud/literatur/files/")
        citar-notes-paths '("~/Nextcloud/literatur/notes/"))
+#+end_src
+* =packages.el=
+#+name: packages
+#+begin_src elisp :noweb yes :tangle packages.el
+<<org-roam-bibtex-packages>>
 #+end_src
