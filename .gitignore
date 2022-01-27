@@ -5,3 +5,4 @@ tmp/
 .directory
 
 config.el
+packages.el
