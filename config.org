@@ -80,9 +80,13 @@ Außerdem komme ich von Spacemacs, daher möchte ich =M-x= auf =SPC SPC= haben
 ** LSP allgemein
 In =init.el= habe ich ~lsp~ aktiviert. Bei den entsprechenden Sprachen ist dementsprechend auch das Flag ~lsp~ zu setzen.
 ** Common Lisp
-:PROPERTIES:
-:LAST_EDIT: 2021-01-10
+:LOGBOOK:
+:CREATED: 2022-01-10
+:LAST_EDIT: 2022-01-28
 :END:
+*STAND 2022-01-28: INAKTIV*: Derzeit habe ich keine Zeit, mich weiter mit dem Buch zu beschäftigen, daher habe ich das Modul wieder deaktiviert.
+
+
 Weil ich das Buch "Land of Lisp" durcharbeite, habe ich in =init.el= auch das entsprechende Modul (~common-lisp~) aktiviert.
 
 Das Buch geht davon aus, dass ich =CLISP= als Interpreter verwende, nicht wie vom Modul vorgesehen =SBCL=. Kein Problem:
