@@ -91,10 +91,16 @@ Weil ich das Buch "Land of Lisp" durcharbeite, habe ich in =init.el= auch das en
 
 Das Buch geht davon aus, dass ich =CLISP= als Interpreter verwende, nicht wie vom Modul vorgesehen =SBCL=. Kein Problem:
 
-#+begin_src elisp
+#+begin_src elisp :tangle no
 (setq inferior-lisp-program "clisp")
 #+end_src
+** Markdown
+*** externe Abhängigkeiten
+Für die Funktion =markdown-preview= braucht man einen Markdown-Compiler:
 
+#+begin_src shell :tangle no
+sudo npm --global install marked
+#+end_src
 
 ** org-mode
 *** Allgemein
@@ -153,6 +159,12 @@ Und dann noch die Minimalkonfiguration:
 (use-package! org-roam-bibtex
   :after org-roam)
 #+end_src
+**** externe Abhängigkeiten
+Für die Darstellung des Graphen sollte =graphviz= installiert sein:
+
+#+begin_src shell :tangle no
+sudo pkcon install graphviz
+#+end_src
 
 ** python
 *** LSP
@@ -163,6 +175,20 @@ Und dann noch die Minimalkonfiguration:
 #+begin_src bash :tangle no
 sudo pip3 install black
 #+end_src
+*** Externe Abhängigkeiten
+Der =doom doctor= ist unzufrieden mit mir. Es fehlen noch ein paar Pakete:
+
+#+begin_src shell :tangle no
+sudo pip3 install pyflakes isort pipenv nose pytest
+#+end_src
+** shell
+*** externe Abhängigkeiten
+Für Linting von Shell-Skripten braucht man =shellcheck=. Das kann zwar mit =zsh= nichts anfangen, aber bei der Komplexität meiner Skripten reicht =bash= wohl meistens.
+
+#+begin_src shell :tangle no
+sudo pkcon install shellcheck
+#+end_src
+
 ** web
 *** LSP
 Hier verwende ich derzeit =html-ls=. Formatieren geht über diesen Server nicht, daher muss das Modul ~format~ aktiviert und =tidy= installiert sein:
@@ -170,6 +196,17 @@ Hier verwende ich derzeit =html-ls=. Formatieren geht über diesen Server nicht,
 #+begin_src bash :tangle no
 sudo apt install tidy
 #+end_src
+*** externe Abhängigkeiten
+Für Formatierung, Lining etc. werden noch externe Programme benötigt:
+
+#+begin_src shell :tangle no
+sudo pkcon install tidy
+#+end_src
+
+#+begin_src shell :tangle no
+sudo npm --global install js-beautify stylelint
+#+end_src
+
 *** tidy
 Die Einrückungen in der Standardeinsteillung nicht wirklich (alles unter ~<body>~ ist auf einer Ebene).
 
