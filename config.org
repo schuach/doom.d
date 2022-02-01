@@ -218,6 +218,32 @@ Die Einrückungen in der Standardeinsteillung nicht wirklich (alles unter ~<body
 ** XML
 *** LSP
 Von ~(web +lsp)~ wird auch in ~nXML-mode~ LSP kofiguriert und beim ersten Start der xmlls installiert.
+* Checkers
+** spell
+Nachdem in meinen Texten Deutsch und Englisch vorkommt, brauche ich einen Spellchecker, der zwei Wörterbücher gleichzeitig kann. Dementsprechend füge ich =init.el= ~(spell +flyspell +hunspell)~ hinzu und installiere =hunspell=:
+
+#+begin_src shell :tangle no
+sudo apt install hunspell hunspell-de-at-frami
+#+end_src
+
+~+flyspell~ ist notwendig, weil =spell-fu= nicht mit hunspell kann, und aspell nicht mit mehreren Wörterbüchern.
+
+*** Wörterbücher konfigurieren
+#+begin_src elisp
+(after! ispell
+  (if (equal system-type 'gnu/linux)
+      (progn
+        (setq ispell-program-name "hunspell")
+        (setq ispell-dictionary "de_AT_frami,en_US")
+        ;; ispell-set-spellchecker-params has to be called
+        ;; before ispell-hunspell-add-multi-dic will work
+        (ispell-set-spellchecker-params)
+        (ispell-hunspell-add-multi-dic "de_AT_frami,en_US"))
+    (setq ispell-dictionary "german8"))
+  )
+#+end_src
+
+
 * app
 ** E-Mail
 :PROPERTIES:
