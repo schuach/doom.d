@@ -351,8 +351,7 @@ Hier muss in Doom Emacs offenbar nicht so viel gemacht werden. Durch das einrich
 :PROPERTIES:
 :ID:       9dc6ef65-8349-4f76-81ad-cc38b1766a2c
 :END:
-Wie im Block [[mail-general][mail-general]] zu sehen ist, ist werden die Mails über =msmtp= gesendet. Die Konfiguration ist hier: *INSERT LINK*
-**** TODO Link zum =config.org=, sobald diese einen endgültigen Platz hat.
+Wie im Block [[mail-general][mail-general]] zu sehen ist, ist werden die Mails über =msmtp= gesendet. Die Konfiguration ist in meiner globalen Konfiguration: [[file:~/projects/system-config/config.org::*=msmtp=][=msmtp=]]
 
 *** Alles zusammensetzen :noexport:
 Hier die Mail-Konfiguration als ganzes:
