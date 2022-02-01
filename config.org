@@ -54,7 +54,7 @@ Darin enthalten ist auch =embark=. =embark-act= hat standardmäßig zwei Binding
 #+end_src
 
 ** Keybindings allgemein
-*** Vim Stuff
+*** evil stuff
 **** Leader, localleader, ex
 Die Umlaute liegen auf meiner Tastatur (xoy) ganz gut, aber für den Doppelpunkt brauche ich die Umschalttaste. Daher scheint es mir eine gute Idee zu sein, wichtige Funktionen, die auf einer englischen Tastatur gut liegen, hierher zu binden.
 
@@ -74,6 +74,12 @@ Außerdem komme ich von Spacemacs, daher möchte ich =M-x= auf =SPC SPC= haben
 #+begin_src elisp
 (map! :leader
       :desc "M-x" "SPC" #'execute-extended-command)
+#+end_src
+**** visual line navigation
+Damit im Normalmodus die Navigation innerhalb von umgebrochenen langen Zeilen funktioniert, muss ~evil-respect-visual-line-mode~ gesetzt werden, und zwar schon in =init.el=:
+
+#+begin_src elisp :tangle no
+(setq evil-respect-visual-line-mode t)
 #+end_src
 
 * Sprachen
@@ -170,7 +176,7 @@ sudo pkcon install graphviz
 *** LSP
 =pyright= benötigt [[file:~/projects/system-config/config.org::*node][node]] > 12.
 *** Formatter
-=pyright= stelt als LSP-server keine Formatierungsfunktion zur Verfügung. Daher muss als Backend für das ~format~ Modul =black= installiert sein:
+=pyright= stellt als LSP-Server keine Formatierungsfunktion zur Verfügung. Daher muss als Backend für das ~format~ Modul =black= installiert sein:
 
 #+begin_src bash :tangle no
 sudo pip3 install black

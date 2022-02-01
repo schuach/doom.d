@@ -189,3 +189,6 @@
        :config
        literate
        (default +bindings +smartparens))
+
+;; respect visual lines in normal mode
+(setq evil-respect-visual-line-mode t)
