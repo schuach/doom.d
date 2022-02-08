@@ -109,17 +109,28 @@ sudo npm --global install marked
 #+end_src
 
 ** org-mode
+:LOGBOOK:
+CLOCK: [2022-02-08 Di 16:48]--[2022-02-08 Di 16:53] =>  0:05
+:END:
 *** Allgemein
 Der Ordner, in dem meine org-files wohnen und wo die Attachments hingehen:
-#+begin_src elisp
+
+#+NAME: org-directory
+#+begin_src elisp :tangle no
 (setq org-directory "~/Nextcloud/org")
 #+end_src
 **** org-attach
+#+NAME: org-attach-id-dir
 #+begin_src elisp
 (setq org-attach-id-dir "~/Nextcloud/org/attach")
 #+end_src
+**** TODO Timestamps bei Überschriften einfügen
+:PROPERTIES:
+:CREATED:  [2022-02-02 Mi 09:06]
+:END:
+https://stackoverflow.com/questions/12262220/add-created-date-property-to-todos-in-org-mode
 *** Keybindings
-=C-c C-c= auf =localleader localleader=. In meiner derzeitigen Konfiguration heißt das =ü ü=.
+=C-c C-c= auf =localleader localleader=. In meiner [[*Leader, localleader, ex][derzeitigen Konfiguration]] heißt das =ü ü=.
 #+begin_src elisp
 (map! :after org
       :map org-mode-map
@@ -138,7 +149,6 @@ Zuerst muss =org-roam= wissen, wo die Dateien sind:
 #+begin_src elisp
 (setq org-roam-directory "~/Nextcloud/org/org-roam/")
 #+end_src
-
 
 **** org-roam-bibtex
 https://github.com/org-roam/org-roam-bibtex
@@ -170,6 +180,64 @@ Für die Darstellung des Graphen sollte =graphviz= installiert sein:
 
 #+begin_src shell :tangle no
 sudo pkcon install graphviz
+#+end_src
+*** Workflow
+**** org-capture
+:LOGBOOK:
+CLOCK: [2022-02-08 Di 17:17]
+CLOCK: [2022-02-08 Di 17:08]--[2022-02-08 Di 17:17] =>  0:09
+CLOCK: [2022-02-08 Di 16:36]--[2022-02-08 Di 16:44] =>  0:08
+CLOCK: [2022-02-08 Di 15:03]--[2022-02-08 Di 15:15] =>  0:12
+:END:
+
+Ich verwende verschiedene Templates für =org-capture=. Sie werden alle in ~org-default-notes-file~ gespeichert, von wo ich sie dann in ihre jeweiligen Zieldateien verschiebe.
+
+- "To Do" :: Erstellt ein TODO-Item. Nachdem es manchmal durchaus etwas dauert, einen Gedanken zu formulieren, wird hier auch die Stechuhr aktiviert und nach dem Schließen die vorige Uhr fortgesetzt.
+- "Bearbeiten" :: Bucket für E-Mails, die irgendeine Aktion erfordern. Das setzt voraus, dass dieses Template von einem =mu4e=-Puffer aus aufgerufen wird. Es öffnet sich kein Capture-Fenster, sondern es wird nur der Eintrag in der Notizdatei erstellt.
+- "Antworten" :: Im Prinzip wie "Bearbeiten". Allerdings bekommt es ein "SCHEDULED"-Property.
+- "Notiz" :: Eine Notiz (mit Tag ~:NOTE:~)
+- "Besprechung" :: Für Besprechungsnotizen, Zeit läuft.
+- "Telefonat" :: Für Besprechungen am Telefon.
+
+
+#+NAME: org-capture-templates
+#+begin_src elisp :tangle no
+  ;; Capture templates
+  (setq org-capture-templates
+        (quote (("t" "To Do" entry (file org-default-notes-file)
+                 "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
+                ("b" "Bearbeiten" entry (file org-default-notes-file)
+                 "* TODO Bearbeiten: %:subject\n%U\n%a\n%i\n" :immediate-finish t)
+                ("r" "Antworten ([r]eply)" entry (file org-default-notes-file)
+                 "* TODO Antwort an %:from bezüglich %:subject\nSCHEDULED: %t\n%U\n%a\n" :immediate-finish t)
+                ("n" "Notiz" entry (file org-default-notes-file)
+                 "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+                ;; ("j" "Journal" entry (file+datetree org-journal-file)
+                ;;  "* %?\n%U\n" :clock-in t :clock-resume t)
+                ("B" "Besprechung" entry (file org-default-notes-file)
+                 "* Besprechung mit %? :MEETING:\n%U" :clock-in t :clock-resume t)
+                ("T" "Telefonat" entry (file org-default-notes-file)
+                 "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
+                )))
+#+end_src
+
+Die "Inbox"-Datei muss ich natürlich auch noch definieren:
+
+#+NAME: org-default-notes-file
+#+BEGIN_SRC elisp :tangle no
+(setq org-default-notes-file (concat org-directory "/refile.org"))
+#+END_SRC
+
+*** Die ~after!~-Sektion
+Viele Dinge müssen erst geladen werden, nachdem =org= geladen wurde. Hier wiederholen sich (per noweb) auch Codeblöcke, die anderswo stehen.
+
+#+begin_src elisp :noweb yes
+(after! org
+  <<org-directory>>
+  <<org-attach-id-dir>>
+  <<org-default-notes-file>>
+  <<org-capture-templates>>
+  )
 #+end_src
 
 ** python
@@ -257,7 +325,7 @@ sudo apt install hunspell hunspell-de-at-frami
 :END:
 Ich benutze =mu4e= für meine Mails. Die Synchronisierung der Mails läuft über =mbsync=, gesendet werden die mails mit =msmtp=.
 
-- Doku zum Doom-Modul :: [[file:~/doom-emacs/modules/email/mu4e/README.org::+TITLE: email/mu4e][email/mu4e/README.org]]
+- Doku zum Doom-Modul :: [[file:~/.emacs.doom.d/modules/email/mu4e/README.org::+TITLE: email/mu4e][email/mu4e/README.org]]
 *** Main view
 **** Shortcuts zu den wichtigsten Ordnern
 #+NAME: mu4e-maildir-shortcuts
