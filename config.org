@@ -292,6 +292,15 @@ Die Einrückungen in der Standardeinsteillung nicht wirklich (alles unter ~<body
 ** XML
 *** LSP
 Von ~(web +lsp)~ wird auch in ~nXML-mode~ LSP kofiguriert und beim ersten Start der xmlls installiert.
+*** TEST XSPEC
+Das Schema für XSpec ist vorhanden und kann =nXml-mode= zur Verfügung gestellt werden: https://github.com/xspec/xspec/wiki/Integrating-with-Emacs
+
+#+begin_src elisp
+(after! nxml
+  (add-to-list 'rng-schema-locating-files "~/opt/xspec/editors/emacs/schemas.xml")
+  (add-to-list 'rng-preferred-prefix-alist '("http://www.jenitennison.com/xslt/xspec" . "x")))
+#+end_src
+
 * Checkers
 ** spell
 Nachdem in meinen Texten Deutsch und Englisch vorkommt, brauche ich einen Spellchecker, der zwei Wörterbücher gleichzeitig kann. Dementsprechend füge ich =init.el= ~(spell +flyspell +hunspell)~ hinzu und installiere =hunspell=:
@@ -449,4 +458,6 @@ In =init.el= habe ich ~biblio~ aktiviert. Hier nun die entsprechende Konfigurati
 #+name: packages
 #+begin_src elisp :noweb yes :tangle packages.el
 <<org-roam-bibtex-packages>>
+
+(package! xquery-mode)
 #+end_src
