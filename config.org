@@ -198,7 +198,6 @@ sudo pkcon install graphviz
 *** Workflow
 **** org-capture
 :LOGBOOK:
-CLOCK: [2022-02-08 Di 17:17]
 CLOCK: [2022-02-08 Di 17:08]--[2022-02-08 Di 17:17] =>  0:09
 CLOCK: [2022-02-08 Di 16:36]--[2022-02-08 Di 16:44] =>  0:08
 CLOCK: [2022-02-08 Di 15:03]--[2022-02-08 Di 15:15] =>  0:12
@@ -357,7 +356,7 @@ Ich benutze =mu4e= für meine Mails. Die Synchronisierung der Mails läuft über
 #+NAME: mu4e-maildir-shortcuts
 #+begin_src elisp :tangle no
 (setq mu4e-maildir-shortcuts
-        '(("/uni/INBOX" . ?i)
+        '(("/obvsg/INBOX" . ?i)
           ("/schuhu/INBOX" . ?s)
           ("/gmail/INBOX" . ?g)
           ))
@@ -382,7 +381,7 @@ Sobald ich das weiß, kann ich mich um ein anderes Symbol kümmern. So ist es in
  mu4e-use-fancy-chars nil ; don't use icons, they mess up the linespacing
  mu4e-attachment-dir "~/Downloads"
  mu4e-maildir (expand-file-name "~/Maildir")
- mu4e-get-mail-command "mbsync schuhu uni gmail"
+ mu4e-get-mail-command "mbsync schuhu obvsg gmail"
  mu4e-update-interval 180 ;; check for mail every 3 minutes
  sendmail-program (executable-find "msmtp")
  send-mail-function #'smtpmail-send-it
@@ -404,38 +403,55 @@ In der ursprünglichen Einstellung hat das Datum im header-view keinen Platz.
 *** Konten einrichten
 #+NAME: mail-accounts
 #+begin_src elisp :tangle no
-    (set-email-account! "schuhu"
-                        '((mu4e-sent-folder . "/schuhu/Gesendet")
-                          (mu4e-drafts-folder . "/schuhu/Drafts")
-                          (mu4e-trash-folder . "/schuhu/Papierkorb")
-                          (mu4e-refile-folder . "/schuhu/Archiv")
-                          (user-mail-address . "stefan@schuhu.at")
-                          (user-full-name . "Stefan Schuh")
-                          (mu4e-compose-signature . (concat
-                                               "Stefan Schuh\n"
-                                               "Maria-Pachleitner-Straße 51/10\n"
-                                               "8053 Graz"))))
+(set-email-account! "obvsg"
+                    '((user-mail-address . "stefan.schuh@obvsg.at")
+                      (user-full-name . "Stefan Schuh")
+                      (mu4e-drafts-folder . "/obvsg/Drafts")
+                      (mu4e-sent-folder . "/obvsg/Sent")
+                      (mu4e-trash-folder . "/obvsg/Trash")
+                      (mu4e-refile-folder . "/obvsg/Archiv")
+                      (mu4e-compose-signature . (concat
 
-    (set-email-account! "uni"
-                        '(( user-mail-address	     . "stefan.schuh@uni-graz.at" )
-                        ( user-full-name	     . "Stefan Schuh" )
-                        ( mu4e-compose-signature  .   (concat
-                                                        "Mag. Stefan Schuh (B.A.)   https://ub.uni-graz.at/\n"
-                                                        "mailto:stefan.schuh@uni-graz.at fon:+43-316-380-1461\n"
-                                                        "Universitätsbibliothek Graz, Medienbearbeitung:\n"
-                                                        "Universitätsplatz 3a, 8010 Graz"))
-                        ;; special folders
-                        (mu4e-drafts-folder . "/uni/drafts")
-                        (mu4e-sent-folder . "/uni/sent")
-                        (mu4e-trash-folder . "/uni/trash")
-                        (mu4e-refile-folder . "/uni/Archiv")))
-    (set-email-account! "gmail"
-                        '((user-mail-address . "stefan.schuh.ba@gmail.com")
-                          (user-full-name . "Stefan Schuh")
-                          (mu4e-drafts-folder . "/gmail/drafts")
-                          (mu4e-sent-folder . "/gmail/sent")
-                          (mu4e-trash-folder ."/gmail/trash")
-                          ))
+"Stefan Schuh     Die Österreichische Bibliothekenverbund und Service\n"
+"                                               Gesellschaft m. b. H.\n"
+"Tel: +43 1 4035158-65                  A-1020 Wien, Raimundgasse 1/3"
+
+
+
+))
+                      ))
+(set-email-account! "schuhu"
+                    '((mu4e-sent-folder . "/schuhu/Gesendet")
+                      (mu4e-drafts-folder . "/schuhu/Drafts")
+                      (mu4e-trash-folder . "/schuhu/Papierkorb")
+                      (mu4e-refile-folder . "/schuhu/Archiv")
+                      (user-mail-address . "stefan@schuhu.at")
+                      (user-full-name . "Stefan Schuh")
+                      (mu4e-compose-signature . (concat
+                                                 "Stefan Schuh\n"
+                                                 "Maria-Pachleitner-Straße 51/10\n"
+                                                 "8053 Graz"))))
+
+(set-email-account! "uni"
+                    '(( user-mail-address	     . "stefan.schuh@uni-graz.at" )
+                      ( user-full-name	     . "Stefan Schuh" )
+                      ( mu4e-compose-signature  .   (concat
+                                                     "Mag. Stefan Schuh (B.A.)   https://ub.uni-graz.at/\n"
+                                                     "mailto:stefan.schuh@uni-graz.at fon:+43-316-380-1461\n"
+                                                     "Universitätsbibliothek Graz, Medienbearbeitung:\n"
+                                                     "Universitätsplatz 3a, 8010 Graz"))
+                      ;; special folders
+                      (mu4e-drafts-folder . "/uni/drafts")
+                      (mu4e-sent-folder . "/uni/sent")
+                      (mu4e-trash-folder . "/uni/trash")
+                      (mu4e-refile-folder . "/uni/Archiv")))
+(set-email-account! "gmail"
+                    '((user-mail-address . "stefan.schuh.ba@gmail.com")
+                      (user-full-name . "Stefan Schuh")
+                      (mu4e-drafts-folder . "/gmail/drafts")
+                      (mu4e-sent-folder . "/gmail/sent")
+                      (mu4e-trash-folder ."/gmail/trash")
+                      ))
 #+end_src
 
 *** Kontexte
