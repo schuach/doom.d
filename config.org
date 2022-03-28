@@ -234,9 +234,11 @@ Viele Dinge müssen erst geladen werden, nachdem =org= geladen wurde. Hier wiede
 #+begin_src elisp :noweb yes
 (after! org
   <<org-directory>>
+  <<org-agenda-files>>
   <<org-attach-id-dir>>
   <<org-default-notes-file>>
   <<org-capture-templates>>
+  <<org-attach-store-link-p>>
   )
 #+end_src
 
