@@ -124,11 +124,25 @@ Der Ordner, in dem meine org-files wohnen und wo die Attachments hingehen:
 #+begin_src elisp
 (setq org-attach-id-dir "~/Nextcloud/org/attach")
 #+end_src
+
+Und damit jedes mal, wenn ein Attachment angelegt wird, ein Link in =org-stored-links= kommt, den man dann mit =C-c C-l= einfügen kann:
+#+NAME: org-attach-store-link-p
+#+BEGIN_SRC elisp
+(setq org-attach-store-link-p 'attached)
+#+END_SRC
 **** TODO Timestamps bei Überschriften einfügen
 :PROPERTIES:
 :CREATED:  [2022-02-02 Mi 09:06]
 :END:
 https://stackoverflow.com/questions/12262220/add-created-date-property-to-todos-in-org-mode
+*** Agenda
+Ohne Worte:
+
+#+NAME: org-agenda-files
+#+BEGIN_SRC elisp :tangle no
+(add-to-list 'org-agenda-files "~/OBVSG/obvsg.org")
+(add-to-list 'org-agenda-files "~/OBVSG/Projekte/Albertina/albertina.org")
+#+END_SRC
 *** Keybindings
 =C-c C-c= auf =localleader localleader=. In meiner [[*Leader, localleader, ex][derzeitigen Konfiguration]] heißt das =ü ü=.
 #+begin_src elisp
