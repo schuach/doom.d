@@ -289,6 +289,7 @@ Die Einrückungen in der Standardeinsteillung nicht wirklich (alles unter ~<body
 #+NAME: html-tidy
 #+begin_src elisp
 (set-formatter! 'html-tidy "tidy -q -indent --indent-spaces 2" :modes '(html-mode web-mode))
+(set-formatter! 'html-tidy "tidy -q -xml -indent --indent-spaces 2" :modes '(nxml-mode))
 #+end_src
 
 ** XML
