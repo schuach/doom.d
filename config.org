@@ -219,10 +219,8 @@ sudo pkcon install graphviz
 *** Workflow
 **** org-capture
 :LOGBOOK:
-<<<<<<< Updated upstream
 =======
 CLOCK: [2022-02-08 Di 17:17]--[2022-02-08 Di 17:20] =>  0:03
->>>>>>> Stashed changes
 CLOCK: [2022-02-08 Di 17:08]--[2022-02-08 Di 17:17] =>  0:09
 CLOCK: [2022-02-08 Di 16:36]--[2022-02-08 Di 16:44] =>  0:08
 CLOCK: [2022-02-08 Di 15:03]--[2022-02-08 Di 15:15] =>  0:12
@@ -271,20 +269,13 @@ Viele Dinge müssen erst geladen werden, nachdem =org= geladen wurde. Damit in d
 
 #+begin_src elisp :noweb yes
 (after! org
-<<<<<<< Updated upstream
-  <<org-directory>>
+  <<org-directories>>
   <<org-agenda-files>>
   <<org-attach-id-dir>>
   <<org-default-notes-file>>
   <<org-capture-templates>>
   <<org-attach-store-link-p>>
-=======
-  <<org-directories>>
-  <<org-attach-id-dir>>
-  <<org-default-notes-file>>
-  <<org-capture-templates>>
   <<koma-article>>
->>>>>>> Stashed changes
   )
 #+end_src
 
