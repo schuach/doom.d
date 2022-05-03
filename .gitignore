@@ -6,3 +6,4 @@ tmp/
 
 config.el
 packages.el
+custom.el
