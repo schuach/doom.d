@@ -488,6 +488,16 @@ Hier die Mail-Konfiguration als ganzes:
    <<headers-fields>>
    )
 #+end_src
+** Emacs everywhere
+Für Emacs everywhere muss ich nicht viel mehr tun, als die Zeile in =init.el= von ihren Kommentaren zu befreien. Zusätzlich hätte ich gerne die gewohnte Kombination =localleader localleader= für =C-c C-c=:
+
+#+begin_src elisp
+(after! emacs-everywhere
+  (map! :map emacs-everywhere-mode-map
+        :desc "finish or C-c C-c"
+        :localleader doom-localleader-key #'emacs-everywhere-finish-or-ctrl-c-ctrl-c))
+#+end_src
+
 * tools
 ** biblio
 In =init.el= habe ich ~biblio~ aktiviert. Hier nun die entsprechende Konfiguration:
