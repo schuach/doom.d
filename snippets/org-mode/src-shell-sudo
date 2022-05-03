@@ -1,0 +1,7 @@
+# key: srcdo
+# name: src shell sudo
+# condition: t
+# --
+#+begin_src shell :dir /sudo::
+`(org-edit-special)`
+#+end_src

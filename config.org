@@ -121,14 +121,10 @@ CLOCK: [2022-02-08 Di 16:48]--[2022-02-08 Di 16:53] =>  0:05
 *** Allgemein
 Der Ordner, in dem meine org-files wohnen und wo die Attachments hingehen:
 
-#+NAME: org-directory
+#+NAME: org-directories
 #+begin_src elisp :tangle no
-(setq org-directory "~/Nextcloud/org")
-#+end_src
-**** org-attach
-#+NAME: org-attach-id-dir
-#+begin_src elisp
-(setq org-attach-id-dir "~/Nextcloud/org/attach")
+(setq org-directory "~/Nextcloud/org"
+      org-attach-id-dir "~/Nextcloud/org/attach")
 #+end_src
 
 Und damit jedes mal, wenn ein Attachment angelegt wird, ein Link in =org-stored-links= kommt, den man dann mit =C-c C-l= einfügen kann:
@@ -157,6 +153,31 @@ Ohne Worte:
       :localleader
       doom-localleader-key #'org-ctrl-c-ctrl-c)
 #+end_src
+*** LaTeX-Eport
+**** Klassen
+***** Koma Article
+Die wichtigste Klasse für mich ist der KOMA-Artikel. Diese Klassendefinition habe ich von hier: [[https://orgmode.org/worg/exporters/anno-bib-template-worg.html#orgf3daba4]]
+
+#+NAME: koma-article
+#+BEGIN_SRC elisp :tangle no
+(after! ox-latex
+  (add-to-list 'org-latex-classes
+               '("koma-article"
+                 "\\documentclass[12pt,a4paper]{scrartcl}
+                \\usepackage[english,ngerman]{babel}
+                \\usepackage{microtype}
+                \\usepackage{tgpagella}
+                \\linespread{1.05}
+                \\usepackage[scale=.9]{tgheros}
+                \\usepackage{tgcursor}
+                \\usepackage{paralist}"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+#+END_SRC
+
 *** org-roam
 :PROPERTIES:
 :LAST_EDIT: 2021-01-14
@@ -204,6 +225,8 @@ sudo pkcon install graphviz
 *** Workflow
 **** org-capture
 :LOGBOOK:
+=======
+CLOCK: [2022-02-08 Di 17:17]--[2022-02-08 Di 17:20] =>  0:03
 CLOCK: [2022-02-08 Di 17:08]--[2022-02-08 Di 17:17] =>  0:09
 CLOCK: [2022-02-08 Di 16:36]--[2022-02-08 Di 16:44] =>  0:08
 CLOCK: [2022-02-08 Di 15:03]--[2022-02-08 Di 15:15] =>  0:12
@@ -248,16 +271,17 @@ Die "Inbox"-Datei muss ich natürlich auch noch definieren:
 #+END_SRC
 
 *** Die ~after!~-Sektion
-Viele Dinge müssen erst geladen werden, nachdem =org= geladen wurde. Hier wiederholen sich (per noweb) auch Codeblöcke, die anderswo stehen.
+Viele Dinge müssen erst geladen werden, nachdem =org= geladen wurde. Damit in den Codebeispielen oben nicht immer =after!=-Makros notwendig sind, werden sie hier alle per noweb in einem zusammengefasst.
 
 #+begin_src elisp :noweb yes
 (after! org
-  <<org-directory>>
+  <<org-directories>>
   <<org-agenda-files>>
   <<org-attach-id-dir>>
   <<org-default-notes-file>>
   <<org-capture-templates>>
   <<org-attach-store-link-p>>
+  <<koma-article>>
   )
 #+end_src
 
