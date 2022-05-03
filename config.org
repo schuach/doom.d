@@ -81,6 +81,12 @@ Damit im Normalmodus die Navigation innerhalb von umgebrochenen langen Zeilen fu
 #+begin_src elisp :tangle no
 (setq evil-respect-visual-line-mode t)
 #+end_src
+** Abbrevs
+Ich verwende gerne und ausgiebig abbrevs. Gerade für immer wiederkehrenden Fluff. Hier also der Pfad zur entsprechenden Datei:
+
+#+begin_src elisp
+(setq abbrev-file-name (concat doom-private-dir "my-abbrevs"))
+#+end_src
 
 * Sprachen
 ** LSP allgemein
