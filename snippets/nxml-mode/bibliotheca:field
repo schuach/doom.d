@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: bibliotheca:field
+# key: bf
+# --
+<bibliotheca:field type="$1" code="$2">$0</bibliotheca:field>
