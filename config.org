@@ -311,10 +311,21 @@ Von ~(web +lsp)~ wird auch in ~nXML-mode~ LSP kofiguriert und beim ersten Start 
 *** TEST XSPEC
 Das Schema für XSpec ist vorhanden und kann =nXml-mode= zur Verfügung gestellt werden: https://github.com/xspec/xspec/wiki/Integrating-with-Emacs
 
-#+begin_src elisp
+#+begin_src elisp :noweb yes
 (after! nxml
   (add-to-list 'rng-schema-locating-files "~/opt/xspec/editors/emacs/schemas.xml")
-  (add-to-list 'rng-preferred-prefix-alist '("http://www.jenitennison.com/xslt/xspec" . "x")))
+  (add-to-list 'rng-preferred-prefix-alist '("http://www.jenitennison.com/xslt/xspec" . "x"))
+  <<run-xspec-on-file>>)
+#+end_src
+
+Damit ich xspec mit der gerade geöffneten Datei aufrufen kann, verwende ich diese Funktion:
+#+NAME: run-xspec-on-file
+#+begin_src elisp :tanle no
+(defun run-xspec-on-file ()
+  "Runs xspec on current file."
+  (interactive)
+  (async-shell-command
+   (concat "xspec " (buffer-file-name))))
 #+end_src
 
 * Checkers
