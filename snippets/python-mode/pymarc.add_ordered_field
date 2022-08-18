@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: pymarc.add_ordered_field
+# key: pmaof
+# --
+record.add_ordered_field(
+    pymarc.Field(
+        tag="$1",
+        indicators=["$2", "$3"],
+        subfields=["$4", "$0"]
+    )
+)

@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: subfield
+# key: subf
+# condition: t
+# --
+<marc:subfield code="$1">$0</marc:subfield>

@@ -1,0 +1,7 @@
+# key: tmatch
+# name: xsl-template-match
+# condition: t
+# --
+<xsl:template match="$1">
+  $0
+</xsl:template>

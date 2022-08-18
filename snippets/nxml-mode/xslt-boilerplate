@@ -1,0 +1,21 @@
+# key: xslt
+# name: xslt-boilerplate
+# condition: t
+# --
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:utils="http://www.obvsg.at/fhv/utils" expand-text="yes" version="3.0">
+
+  <!--
+    Wenn für ein Element kein Template vorhanden ist, wird es samt seinen Kindknoten
+    in die Ausgabe kopiert. Ausnahme sind Kindknoten, für die explizite Regeln vorhanden
+    sind.
+  -->
+  <xsl:mode on-no-match="shallow-copy" />
+
+  <xsl:template match="/">
+    <xsl:apply-templates select="*" />
+  </xsl:template>
+
+  $0
+
+</xsl:stylesheet>

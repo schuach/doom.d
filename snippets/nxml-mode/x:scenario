@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: x:scenario
+# key: xscen
+# condition: t
+# --
+<x:scenario label="$1">
+  <x:context>
+  </x:context>
+  <x:expect label="$0">
+  </x:expect>
+</x:scenario>
