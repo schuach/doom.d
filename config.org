@@ -7,6 +7,23 @@
 #+begin_src emacs-lisp
 ;;; config.el -*- lexical-binding: t; -*-
 #+end_src
+** Funktionen
+*** =async-shell-command-no-window=
+Ich möchte manchmal asynchrone Shell-Kommandos ausführen, aber u. U. den Puffer "Asynchronous Shell Command" nicht sehen. Anwendungsbeispiel: Wenn ich den HTML-Report von XSPEC bereits offen habe, interessiert mich der Shell output nicht. Nachdem =async-shell-command= keine einfache Option hat, den Puffer zu unterdrücken, habe ich das hier gefunden:
+
+#+begin_src elisp
+(defun async-shell-command-no-window
+    (command)
+  (interactive)
+  (let
+      ((display-buffer-alist
+        (list
+         (cons
+          "\\*Async Shell Command\\*.*"
+          (cons #'display-buffer-no-window nil)))))
+    (async-shell-command
+     command)))
+#+end_src
 ** Userinfo
 #+begin_src elisp
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
@@ -86,6 +103,8 @@ Ich verwende gerne und ausgiebig abbrevs. Gerade für immer wiederkehrenden Fluf
 
 #+begin_src elisp
 (setq abbrev-file-name (concat doom-private-dir "my-abbrevs"))
+(set-default 'abbrev-mode t)
+(setq save-abbrevs 'silently)
 #+end_src
 
 * Sprachen
@@ -336,13 +355,22 @@ Die Einrückungen in der Standardeinsteillung nicht wirklich (alles unter ~<body
 #+end_src
 
 ** XML
+*** Keybindings
+#+begin_src elisp
+(map! :after nxml-mode
+      :map nxml-mode-map
+      :localleader
+      (:prefix ("t" . "test")
+       "t" #'run-xspec-on-file))
+#+end_src
+
 *** LSP
 Von ~(web +lsp)~ wird auch in ~nXML-mode~ LSP kofiguriert und beim ersten Start der xmlls installiert.
-*** TEST XSPEC
+*** XSpec
 Das Schema für XSpec ist vorhanden und kann =nXml-mode= zur Verfügung gestellt werden: https://github.com/xspec/xspec/wiki/Integrating-with-Emacs
 
 #+begin_src elisp :noweb yes
-(after! nxml
+(after! nxml-mode
   (add-to-list 'rng-schema-locating-files "~/opt/xspec/editors/emacs/schemas.xml")
   (add-to-list 'rng-preferred-prefix-alist '("http://www.jenitennison.com/xslt/xspec" . "x"))
   <<run-xspec-on-file>>)
@@ -350,12 +378,16 @@ Das Schema für XSpec ist vorhanden und kann =nXml-mode= zur Verfügung gestellt
 
 Damit ich xspec mit der gerade geöffneten Datei aufrufen kann, verwende ich diese Funktion:
 #+NAME: run-xspec-on-file
-#+begin_src elisp :tanle no
+#+begin_src elisp :tangle no
 (defun run-xspec-on-file ()
-  "Runs xspec on current file."
+  "Runs xspec on current file.
+If call with prefix arg, the *Async Shell Command* buffer is not displayed.
+"
   (interactive)
-  (async-shell-command
-   (concat "xspec " (buffer-file-name))))
+  (let ((cmd (concat "xspec " (buffer-file-name))))
+    (if current-prefix-arg
+        (async-shell-command-no-window cmd)
+      (async-shell-command cmd))))
 #+end_src
 
 * Checkers
