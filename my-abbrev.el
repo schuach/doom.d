@@ -2,8 +2,6 @@
 ;; sample use of abbrev
 ;; from http://ergoemacs.org/emacs/emacs_abbrev_mode.html
 
-(clear-abbrev-table global-abbrev-table)
-
 (define-abbrev-table 'global-abbrev-table
   '(
     ;; Beginnen immer mit z, zwecks Eindeutigkeit. Können keine Interpunktion enthalten.
@@ -52,6 +50,3 @@
     ("jlssvs" "Josef Labner\nStefan Schuh\nVerena Schaffner")
     ))
 
-(set-default 'abbrev-mode t)
-
-(setq save-abbrevs 'silently)
