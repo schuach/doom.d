@@ -69,7 +69,10 @@ Darin enthalten ist auch =embark=. =embark-act= hat standardmäßig zwei Binding
        "C-ö"            #'embark-act
        "C-c C-ö"        #'embark-export))
 #+end_src
-
+** Kalender
+#+begin_src elisp
+(setq calendar-week-start-day 1)
+#+end_src
 ** Keybindings allgemein
 *** evil stuff
 **** Leader, localleader, ex
@@ -181,8 +184,7 @@ Ohne Worte:
 
 #+NAME: org-agenda-files
 #+BEGIN_SRC elisp :tangle no
-(add-to-list 'org-agenda-files "~/OBVSG/obvsg.org")
-(add-to-list 'org-agenda-files "~/OBVSG/Projekte/Albertina/albertina.org")
+(add-to-list 'org-agenda-files "~/Nextcloud/org")
 #+END_SRC
 *** Keybindings
 =C-c C-c= auf =localleader localleader=. In meiner [[*Leader, localleader, ex][derzeitigen Konfiguration]] heißt das =ü ü=.
@@ -444,6 +446,13 @@ sudo apt install hunspell hunspell-de-at-frami
 Ich benutze =mu4e= für meine Mails. Die Synchronisierung der Mails läuft über =mbsync=, gesendet werden die mails mit =msmtp=.
 
 - Doku zum Doom-Modul :: [[file:~/.emacs.doom.d/modules/email/mu4e/README.org::+TITLE: email/mu4e][email/mu4e/README.org]]
+*** ~load-path~
+Ich habe =mu= (und emacs) als snap installiert, daher muss der load-path angepasst werden.
+
+#+begin_src elisp
+(add-to-list 'load-path "/snap/maildir-utils/current/share/emacs/site-lisp/mu4e/")
+#+end_src
+
 *** Main view
 **** Shortcuts zu den wichtigsten Ordnern
 #+NAME: mu4e-maildir-shortcuts
