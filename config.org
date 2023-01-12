@@ -29,7 +29,7 @@ Ich möchte manchmal asynchrone Shell-Kommandos ausführen, aber u. U. den Puffe
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "Stefan Schuh"
-      user-mail-address "stefan@schuhu.at")
+      user-mail-address "stefan.schuh@obvsg.at")
 #+end_src
 
 ** UI
@@ -106,7 +106,10 @@ Ich verwende gerne und ausgiebig abbrevs. Gerade für immer wiederkehrenden Fluf
 (set-default 'abbrev-mode t)
 (setq save-abbrevs 'silently)
 #+end_src
-
+** Load Path
+#+begin_src elisp
+(add-to-list 'load-path "/home/schuhs/.doom.d/lisp/")
+#+end_src
 * Sprachen
 ** LSP allgemein
 In =init.el= habe ich ~lsp~ aktiviert. Bei den entsprechenden Sprachen ist dementsprechend auch das Flag ~lsp~ zu setzen.
@@ -125,6 +128,23 @@ Das Buch geht davon aus, dass ich =CLISP= als Interpreter verwende, nicht wie vo
 #+begin_src elisp :tangle no
 (setq inferior-lisp-program "clisp")
 #+end_src
+** drools
+Für drools habe ich folgendes gefunden: https://github.com/pdorrell/rules-editing-mode. Dafür gibt es kein MELPA-Paket, daher habe ich eine lokale Kopie gemacht und [[Load Path][load-path]] angepasst.
+
+Initialisierung:
+#+begin_src elisp
+;; (autoload 'drools-mode "drools-mode")
+(require 'drools-mode)
+
+(defun set-extension-mode (extension mode)
+  (setq auto-mode-alist
+	(cons (cons (concat "\\" extension "\\'") mode)
+	      auto-mode-alist) ) )
+
+(set-extension-mode ".drl" 'drools-mode)
+(set-extension-mode ".dslr" 'drools-mode)
+#+end_src
+
 ** Markdown
 *** externe Abhängigkeiten
 Für die Funktion =markdown-preview= braucht man einen Markdown-Compiler:
