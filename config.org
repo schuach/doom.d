@@ -599,6 +599,45 @@ In =init.el= habe ich ~biblio~ aktiviert. Hier nun die entsprechende Konfigurati
        citar-library-paths '("~/Nextcloud/literatur/files/")
        citar-notes-paths '("~/Nextcloud/literatur/notes/"))
 #+end_src
+** magit
+*** forge
+Um auf gitlab-issues etc. zuzugreifen braucht es ein bisschen config.
+
+Zuallererst muss ~(git +forge)~ in ~init.el~ gesetzt sein.
+
+
+**** gitlab.obvsg.at als zu ~forge-alist~ hinzufügen
+Das gitlab der obvsg ist natürlich nicht standardmäßig in ~forge-alist~ vorhanden, also fügen wir es hinzu:
+
+#+begin_src elisp
+(after! forge
+(add-to-list 'forge-alist
+             '("gitlab.obvsg.at"
+               "gitlab.obvsg.at/api/v4"
+               "gitlab.obvsg.at"
+               forge-gitlab-repository)))
+#+end_src
+**** Authentifizierung
+
+Dann muss ein access-token in gitlab generiert werden (unter Profil -> Accsess Tokens)
+
+Dieser Access-Token muss dann in einer ~auth-source~ hinterlegt werden.
+
+#+begin_src config :tangle no
+machine gitlab.obvsg.at/api/v4
+  login ss^forge
+  password ****
+#+end_src
+
+
+In ~Doom Emacs~ ist hierfür ~.emacs.d/.local/state/authinfo.gpg~ vorgesehen. Dafür muss man aber jedes mal  die Passphrase eingeben ...
+
+Daher kommen die Daten in ~~/.netrc~, die ich eh für ~smtpmail~ in Verwendung habe. Das muss dann aber auch gesagt werden:
+
+#+begin_src elisp
+(add-to-list 'auth-sources "~/.netrc")
+#+end_src
+
 * =packages.el=
 #+name: packages
 #+begin_src elisp :noweb yes :tangle packages.el
