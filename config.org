@@ -218,7 +218,30 @@ Die wichtigste Klasse für mich ist der KOMA-Artikel. Diese Klassendefinition ha
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 #+END_SRC
+*** ob-xquery
+=org-babel=-Integration für XQuery. Voraussetzung ist, dass =basex= installiert ist. Der Code ist in [[~/.doom.d/lisp/ob-xquery.el]]. Natürlich müssen wir es initialisieren:
 
+#+name ob-xquery
+#+begin_src elisp
+(require 'ob-xquery)
+(add-to-list 'org-babel-load-languages '(xquery . t))
+(add-to-list 'org-structure-template-alist '("x". "xquery"))
+#+end_src
+
+
+*** org-noter
+Zuerst muss das ~+noter~-flag in =init.el= gesetzt sein. Ich habe meine Literatur in einem Verzeichnis, die Notizen dazu in einem anderen. Jedenfalls ist das Verzeichnis, das ich für die Notizen verwende nicht dort, wo es defaultmäßig konfiguriert ist. Daher:
+#+begin_src elisp
+(setq org-noter-notes-search-path "~/Nextcloud/literatur/notes/")
+#+end_src
+
+**** TODO Keybindings
+=doom-leader-notes-map =
+#+begin_src elisp
+(map! :leader
+       :desc "org-noter-insert-note" "n i" #'org-noter-insert-note
+       :desc "org-noter-insert-precise-note" "n I" #'org-noter-insert-precise-note)
+#+end_src
 *** org-roam
 :PROPERTIES:
 :LAST_EDIT: 2021-01-14
@@ -262,6 +285,35 @@ Für die Darstellung des Graphen sollte =graphviz= installiert sein:
 
 #+begin_src shell :tangle no
 sudo pkcon install graphviz
+#+end_src
+*** TODO org-tempo
+Gewisse =org-struct-templates= werden expandiert, aber wenn ich =org-structure-template-alist= ändere, werden die neuen Templates nicht hinzugefügt. Es scheint, als ob ein anderer Mechanismus als =org-tempo= das macht. Damit meine Templates funktionieren, muss ich offenbar =org-tempo= extra aufrufen:
+
+#+name: org-tempo
+#+begin_src elisp
+(require 'org-tempo)
+#+end_src
+
+Vielleicht gehe ich dem noch nach. Kann sein, dass =doom= das alles über =yasnippet= macht?
+
+*** src block evaluation
+Folgende Funktion (gefunden hier: [[https://emacs.stackexchange.com/questions/23870/org-babel-result-to-a-separate-buffer]]) sorgt dafür, dass der Output eines Codeblocks in einem eigenen Puffer angeezigt wird und das Ergebnis nicht in die Org-Datei geschrieben wird.
+#+begin_src elisp
+(defun my-babel-to-buffer ()
+  "A function to efficiently feed babel code block result to a separate buffer"
+  (interactive)
+  (org-open-at-point)
+  (org-babel-remove-result)
+)
+#+end_src
+
+Natürlich will das auch ein keybinding haben:
+
+#+begin_src elisp
+(map! :after org
+      :map org-mode-map
+      :localleader (:prefix ("u" . "prefix")
+                            doom-localleader-key #'my-babel-to-buffer))
 #+end_src
 *** Workflow
 **** org-capture
@@ -388,6 +440,23 @@ Die Einrückungen in der Standardeinsteillung nicht wirklich (alles unter ~<body
 
 *** LSP
 Von ~(web +lsp)~ wird auch in ~nXML-mode~ LSP kofiguriert und beim ersten Start der xmlls installiert.
+*** XQuery
+Da ich viel XQuery brauche, habe ich =xquery-mode= in =packages.el= aktiviert. Zusätzlich habe ich noch ein modul geschrieben, das XQuery-Anfragen an BaseX schickt. Es befindet sich in [[~/.doom.d/lisp/basex.el]]. Das Verzeichnis ist im =load-path=, also müsste =require= hier reichen:
+
+#+begin_src elisp
+(after! xquery (require 'basex))
+#+end_src
+**** Keybindings
+#+begin_src elisp
+(map! :after xquery-mode
+      :map xquery-mode-map
+      :localleader
+      (:prefix ("r" . "run")
+               "b" #'basex-run-buffer
+               "r" #'basex-run-region
+               "l" #'basex-run-line
+               "o" #'basex-run-src-block))
+#+end_src
 *** XSpec
 Das Schema für XSpec ist vorhanden und kann =nXml-mode= zur Verfügung gestellt werden: https://github.com/xspec/xspec/wiki/Integrating-with-Emacs
 
