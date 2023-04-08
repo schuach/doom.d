@@ -385,11 +385,13 @@ Viele Dinge müssen erst geladen werden, nachdem =org= geladen wurde. Damit in d
   <<org-directories>>
   <<org-agenda-files>>
   <<org-attach-id-dir>>
+  <<org-tempo>>
   <<org-default-notes-file>>
   <<org-capture-templates>>
   <<org-attach-store-link-p>>
   <<koma-article>>
   <<ob-xquery>>
+  <<local-org-extract-src-content>>
   )
 #+end_src
 
@@ -495,7 +497,6 @@ If call with prefix arg, the *Async Shell Command* buffer is not displayed.
         (async-shell-command-no-window cmd)
       (async-shell-command cmd))))
 #+end_src
-
 * Checkers
 ** spell
 Nachdem in meinen Texten Deutsch und Englisch vorkommt, brauche ich einen Spellchecker, der zwei Wörterbücher gleichzeitig kann. Dementsprechend füge ich =init.el= ~(spell +flyspell +hunspell)~ hinzu und installiere =hunspell=:
@@ -726,6 +727,50 @@ Daher kommen die Daten in ~~/.netrc~, die ich eh für ~smtpmail~ in Verwendung h
 
 #+begin_src elisp
 (add-to-list 'auth-sources "~/.netrc")
+#+end_src
+** testparser
+Ich habe ein Script namens "Testparser", das MARCBreaker in MARC-XML-Snippets umwandelt. Hier ein paar Funktionen, für entsprechnede Aufrufe:
+
+#+name: mrc-text-to-xml
+#+begin_src elisp :tangle no
+(defun mrc-text-to-xml-region (start end)
+  (interactive "r")
+  (progn (kill-region start end)
+         (shell-command (concat  "testparser "
+                                 (shell-quote-argument (current-kill 0 t)))
+                        (current-buffer))))
+
+
+(defun mrc-text-to-xml-line ()
+  (interactive)
+  (mrc-text-to-xml (line-beginning-position) (line-end-position)))
+
+(defun mrc-text-to-xml-inner-element ()
+  (interactive)
+  (progn (er/mark-nxml-inside-element)
+         (mrc-text-to-xml-region (point) (mark))))
+#+end_src
+
+
+#+name: mrc-text-to-xml-keybindings
+#+begin_src elisp
+(map! :after nxml-mode
+      :map nxml-mode-map
+      :localleader
+      (:prefix ("t" . "mrc-text-to-xml")
+               "r" #'mrc-text-to-xml-region
+               "l" #'mrc-text-to-xml-line
+               "e" #'mrc-text-to-xml-inner-element))
+
+#+end_src
+
+Das sollte aber erst geladen werden, wenn =nxml= geladen wird:
+
+#+begin_src elisp
+(after! nxml
+  <<mrc-text-to-xml>>
+  <<mrc-text-to-xml-keybindings>>
+  )
 #+end_src
 
 * =packages.el=
