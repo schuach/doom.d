@@ -35,7 +35,7 @@ Ich möchte manchmal asynchrone Shell-Kommandos ausführen, aber u. U. den Puffe
 ** UI
 *** Theme
 #+begin_src elisp
-(setq doom-theme 'doom-monokai-classic)
+(setq doom-theme 'doom-dracula)
 #+end_src
 *** Window selection
 In =init.el= habe ich =(window-select +numbers)= aktiviert. Window selection geht nun über =SPC w {n}=, wobei =n= die Nummer des Fensters ist.
@@ -111,7 +111,7 @@ Ich verwende gerne und ausgiebig abbrevs. Gerade für immer wiederkehrenden Fluf
 #+end_src
 ** Load Path
 #+begin_src elisp
-(add-to-list 'load-path "/home/schuhs/.doom.d/lisp/")
+(add-to-list 'load-path (concat (getenv "HOME") "/.doom.d/lisp/")  )
 #+end_src
 * Sprachen
 ** LSP allgemein
@@ -146,6 +146,7 @@ Initialisierung:
 
 (set-extension-mode ".drl" 'drools-mode)
 (set-extension-mode ".dslr" 'drools-mode)
+(set-extension-mode ".src" 'drools-mode)
 #+end_src
 
 ** Markdown
@@ -513,6 +514,8 @@ sudo apt install hunspell hunspell-de-at-frami
 :ID:       801f7b26-1410-47be-8521-dc30087364b4
 :END:
 Ich benutze =mu4e= für meine Mails. Die Synchronisierung der Mails läuft über =mbsync=, gesendet werden die mails mit =msmtp=.
+
+Die Version die aus den Paketquellen mit =apt= installiert wird, ist nicht mehr mit doom Emacs kompatibel. Daher muss =maildir-utils= via snap installiert werden. Die Snap-Version enthält auch =mu4e=.
 
 - Doku zum Doom-Modul :: [[file:~/.emacs.doom.d/modules/email/mu4e/README.org::+TITLE: email/mu4e][email/mu4e/README.org]]
 *** ~load-path~

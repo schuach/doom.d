@@ -57,7 +57,7 @@
        fold              ; (nigh) universal code folding
        format              ; automated prettiness
        ;;god               ; run Emacs commands without modifier keys
-       ;;lispy             ; vim for lisp, for people who don't like vim
+       lispy               ; vim for lisp, for people who don't like vim
        ;;multiple-cursors  ; editing in many places at once
        ;;objed             ; text object editing for the innocent
        ;;parinfer          ; turn lisp into python, sort of
@@ -105,6 +105,7 @@
        ;;terraform         ; infrastructure as code
        ;;tmux              ; an API for interacting with tmux
        ;;upload            ; map local to remote projects via ssh/ftp
+       tree-sitter
 
        :os
        (:if IS-MAC macos)  ; improve compatibility with macOS
@@ -114,8 +115,8 @@
        ;;agda              ; types of types of types of types...
        ;;beancount         ; mind the GAAP
        ;;cc                ; C > C++ == 1
-       ;;clojure           ; java with a lisp
-       ;;common-lisp       ; if you've seen one lisp, you've seen them all
+       (clojure +lsp +tree-sitter)      ; java with a lisp
+       ;; common-lisp         ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c
        ;;csharp            ; unity, .NET, and mono shenanigans
@@ -150,7 +151,7 @@
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       (org +roam2 +present)        ; organize your plain life in plain text
+       (org +roam2 +noter +present) ; organize your plain life in plain text
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
