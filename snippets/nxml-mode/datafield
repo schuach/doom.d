@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: marc:datafield
+# uuid:
+# key: datafield
+# condition: t
+# --
+<marc:datafield tag="$1" ind1="$2" ind2="$3">
+    <marc:subfield code="a">$0</marc:subfield>
+</marc:datafield>
