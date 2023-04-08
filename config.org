@@ -180,6 +180,19 @@ Und damit jedes mal, wenn ein Attachment angelegt wird, ein Link in =org-stored-
 :CREATED:  [2022-02-02 Mi 09:06]
 :END:
 https://stackoverflow.com/questions/12262220/add-created-date-property-to-todos-in-org-mode
+**** Inhalt von src-Blöcken extrahieren
+Um (für XQuery) Inhalte von Blöcken in header-args übernehmen zu können, braucht es eine Funktion, die den Inhalt eines Codeblocks extrahiert.
+
+#+name: local-org-extract-src-content
+#+begin_src elisp :tangle no
+(defun local-org-extract-src-content (name)
+  (save-excursion
+    (org-babel-goto-named-src-block name)
+    (org-element-property :value (org-element-at-point))))
+#+end_src
+
+Danke Stackoverflow! https://emacs.stackexchange.com/questions/29131/get-contents-of-a-named-source-block
+
 *** Agenda
 Ohne Worte:
 
@@ -226,7 +239,7 @@ Die wichtigste Klasse für mich ist der KOMA-Artikel. Diese Klassendefinition ha
 #+begin_src elisp
 (require 'ob-xquery)
 (add-to-list 'org-babel-load-languages '(xquery . t))
-(add-to-list 'org-structure-template-alist '("x". "xquery"))
+(add-to-list 'org-structure-template-alist '("x". "src xquery"))
 #+end_src
 
 
@@ -376,6 +389,7 @@ Viele Dinge müssen erst geladen werden, nachdem =org= geladen wurde. Damit in d
   <<org-capture-templates>>
   <<org-attach-store-link-p>>
   <<koma-article>>
+  <<ob-xquery>>
   )
 #+end_src
 
@@ -523,6 +537,10 @@ Ich habe =mu= (und emacs) als snap installiert, daher muss der load-path angepas
 
 #+begin_src elisp
 (add-to-list 'load-path "/snap/maildir-utils/current/share/emacs/site-lisp/mu4e/")
+#+end_src
+
+#+begin_src elisp :tangle no
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e/")
 #+end_src
 
 *** Main view
@@ -716,4 +734,5 @@ Daher kommen die Daten in ~~/.netrc~, die ich eh für ~smtpmail~ in Verwendung h
 <<org-roam-bibtex-packages>>
 
 (package! xquery-mode)
+;; (package! basex)
 #+end_src
