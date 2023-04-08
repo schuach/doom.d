@@ -1,0 +1,64 @@
+;;-*-coding: utf-8;-*-
+(define-abbrev-table 'global-abbrev-table
+  '(
+    (",bib" (\, "Bibliothek") nil :count 0)
+    ("zbib" (\, "Bibliothek") nil :count 2)
+    ("zbibar" "Bibliothekar" nil :count 2)
+    ("zbkz" "Beziehungskennzeichnung" nil :count 1)
+    ("zds" "Datensatz" nil :count 1)
+    ("zdss" "Datensätze" nil :count 0)
+    ("zff" "Firefox" nil :count 0)
+    ("zgc" "Google Chrome" nil :count 0)
+    ("zhb" "Hauptbibliothek" nil :count 0)
+    ("zhss" "Hochschulschrift" nil :count 0)
+    ("zhssn" "Hochschulschriften" nil :count 0)
+    ("zie" "Internet Explorer" nil :count 1)
+    ("zkatin" "Katalogisiererinnen und Katalogisierer" nil :count 0)
+    ("zoa" "Open Access" nil :count 0)
+    ("zqa" "∀x" nil :count 0)
+    ("zqe" "∃x" nil :count 0)
+    ("zsts" "Stefan Schuh" nil :count 0)
+    ("zva" "Verantwortlichkeitsangabe" nil :count 0)
+    ("übar" "Bibliothekar" nil :count 1)
+    ("übib" "Bibliothek" nil :count 1)
+    ("übin" "Bibliothekarin" nil :count 1)
+    ("übkz" "Beziehungskennzeichnung" nil :count 2)
+    ("üds" "Datensatz" nil :count 1)
+    ("üdss" "Datensätze" nil :count 0)
+    ("üff" "Firefox" nil :count 0)
+    ("ügc" "Google Chrome" nil :count 0)
+    ("ühb" "Hauptbibliothek" nil :count 0)
+    ("ühss" "Hochschulschrift" nil :count 0)
+    ("ühssn" "Hochschulschriften" nil :count 0)
+    ("üie" "Internet Explorer" nil :count 1)
+    ("ükatin" "Katalogisiererinnen und Katalogisierer" nil :count 0)
+    ("üoa" "Open Access" nil :count 0)
+    ("üqa" "∀x" nil :count 0)
+    ("üqe" "∃x" nil :count 0)
+    ("üsts" "Stefan Schuh" nil :count 0)
+    ("ütest" "Abbrev-Test" nil :count 2)
+    ("üva" "Verantwortlichkeitsangabe" nil :count 0)
+   ))
+
+(define-abbrev-table 'mu4e-compose-mode-abbrev-table
+  '(
+    ("Lgs" "Liebe Grüße
+Stefan" nil :count 1)
+    ("jlssvs" "Josef Labner
+Stefan Schuh
+Verena Schaffner" nil :count 1)
+    ("jsv" "Josef, Stefan und Verena" nil :count 0)
+    ("lgjsv" "liebe Grüße
+Josef, Stefan und Verena" nil :count 2)
+    ("lgs" "liebe Grüße
+Stefan" nil :count 0)
+    ("lk" "Liebe Kolleginnen und Kollegen,
+" nil :count 1)
+    ("mfgs" "mit freundlichen Grüßen
+Stefan Schuh" nil :count 0)
+    ("sgf" "Sehr geehrte Frau" nil :count 0)
+    ("sgh" "Sehr geehrter Herr" nil :count 0)
+    ("sgk" "Sehr geehrte Kolleginnen und Kollegen,
+" nil :count 0)
+   ))
+
