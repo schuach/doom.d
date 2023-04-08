@@ -376,7 +376,19 @@ Die "Inbox"-Datei muss ich natürlich auch noch definieren:
 #+BEGIN_SRC elisp :tangle no
 (setq org-default-notes-file (concat org-directory "/refile.org"))
 #+END_SRC
-
+*** tree-slide
+#+NAME: tree-slide
+#+begin_src elisp :tangle no
+(require 'org-tree-slide nil t)
+ (global-set-key (kbd "<f8>") 'org-tree-slide-mode)
+  (global-set-key (kbd "S-<f8>") 'org-tree-slide-skip-done-toggle)
+  (define-key org-tree-slide-mode-map (kbd "<f9>")
+    'org-tree-slide-move-previous-tree)
+  (define-key org-tree-slide-mode-map (kbd "<f10>")
+    'org-tree-slide-move-next-tree)
+  (define-key org-tree-slide-mode-map (kbd "<f11>")
+    'org-tree-slide-content)
+#+end_src
 *** Die ~after!~-Sektion
 Viele Dinge müssen erst geladen werden, nachdem =org= geladen wurde. Damit in den Codebeispielen oben nicht immer =after!=-Makros notwendig sind, werden sie hier alle per noweb in einem zusammengefasst.
 
@@ -390,8 +402,12 @@ Viele Dinge müssen erst geladen werden, nachdem =org= geladen wurde. Damit in d
   <<org-capture-templates>>
   <<org-attach-store-link-p>>
   <<koma-article>>
+<<<<<<< Updated upstream
   <<ob-xquery>>
   <<local-org-extract-src-content>>
+=======
+  <<tree-slide>>
+>>>>>>> Stashed changes
   )
 #+end_src
 
