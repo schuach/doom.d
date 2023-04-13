@@ -311,14 +311,13 @@ Gewisse =org-struct-templates= werden expandiert, aber wenn ich =org-structure-t
 Vielleicht gehe ich dem noch nach. Kann sein, dass =doom= das alles über =yasnippet= macht?
 
 *** src block evaluation
-Folgende Funktion (gefunden hier: [[https://emacs.stackexchange.com/questions/23870/org-babel-result-to-a-separate-buffer]]) sorgt dafür, dass der Output eines Codeblocks in einem eigenen Puffer angeezigt wird und das Ergebnis nicht in die Org-Datei geschrieben wird.
+Folgende Funktion (gefunden hier: [[https://emacs.stackexchange.com/questions/23870/org-babel-result-to-a-separate-buffer]]) sorgt dafür, dass der Output eines Codeblocks in einem eigenen Puffer angezeigt wird und das Ergebnis nicht in die Org-Datei geschrieben wird.
 #+begin_src elisp
 (defun my-babel-to-buffer ()
   "A function to efficiently feed babel code block result to a separate buffer"
   (interactive)
   (org-open-at-point)
-  (org-babel-remove-result)
-)
+  (org-babel-remove-result))
 #+end_src
 
 Natürlich will das auch ein keybinding haben:
@@ -729,45 +728,81 @@ Daher kommen die Daten in ~~/.netrc~, die ich eh für ~smtpmail~ in Verwendung h
 (add-to-list 'auth-sources "~/.netrc")
 #+end_src
 ** testparser
-Ich habe ein Script namens "Testparser", das MARCBreaker in MARC-XML-Snippets umwandelt. Hier ein paar Funktionen, für entsprechnede Aufrufe:
+Ich habe ein Script namens "[[file:~/projects/tools/testparser/][testparser]]", das MARCBreaker in MARC-XML-Snippets umwandelt. Hier ein paar Funktionen, für entsprechende Aufrufe:
 
 #+name: mrc-text-to-xml
 #+begin_src elisp :tangle no
 (defun mrc-text-to-xml-region (start end)
+  "Transform region of MARCBreaker (or similar) to MARC21 XML via `testparser'."
   (interactive "r")
   (progn (kill-region start end)
          (shell-command (concat  "testparser "
                                  (shell-quote-argument (current-kill 0 t)))
                         (current-buffer))))
 
+(defun mrc-text-to-xml-line (arg)
+  "Transform line of MARCBreaker (or similar) to MARC21 XML via `testparser'.
 
-(defun mrc-text-to-xml-line ()
-  (interactive)
-  (mrc-text-to-xml (line-beginning-position) (line-end-position)))
+If a prefix argument is given, the output of the command is inserted
+without formatting and indenting."
+  (interactive "P")
+  (progn (mrc-text-to-xml-region (line-beginning-position) (line-end-position))
+         (if (eq arg nil)
+             (my-nxml-reformat-containing-element))))
 
-(defun mrc-text-to-xml-inner-element ()
-  (interactive)
+(defun mrc-text-to-xml-inner-element (arg)
+  "Transform element contents (MARCBreaker) to MARC21 XML via `testparser'.
+
+If a prefix argument is given, the output of the command is inserted
+without formatting and indenting."
+  (interactive "P")
   (progn (er/mark-nxml-inside-element)
-         (mrc-text-to-xml-region (point) (mark))))
+         (mrc-text-to-xml-region (point) (mark))
+         (if (eq arg nil)
+             (my-nxml-reformat-containing-element))))
+
+(defun mrc-text-to-xml-from-clipboard (arg)
+  "Run `testparser' with clipboard contents and insert output at point.
+
+If a prefix argument is given, the output of the command is inserted
+without formatting and indenting."
+  (interactive "P")
+  (progn (shell-command "testparser" (current-buffer))
+         (if (eq arg nil)
+             (my-nxml-reformat-containing-element))))
+
+(defun my-nxml-reformat-containing-element ()
+  (interactive)
+  (progn (er/mark-nxml-containing-element)
+         (+format/region (point) (mark))
+         (er/mark-nxml-containing-element)
+         (indent-region (point) (mark))))
+
 #+end_src
 
+#+RESULTS: mrc-text-to-xml
+: my-nxml-reformat-containing-element
+
+*DEPENDENCY:*
+=mrc-text-to-xml-inside-element= benötigt das Paket =expand-region.el=. Dieses wird von =doom= mitinstalliert. Der Namespace =+format= gehört auch zu =doom=.
 
 #+name: mrc-text-to-xml-keybindings
 #+begin_src elisp
 (map! :after nxml-mode
       :map nxml-mode-map
       :localleader
-      (:prefix ("t" . "mrc-text-to-xml")
+      (:prefix ("m" . "mrc-text-to-xml")
+               "c" #'mrc-text-to-xml-from-clipboard
+               "e" #'mrc-text-to-xml-inner-element
                "r" #'mrc-text-to-xml-region
-               "l" #'mrc-text-to-xml-line
-               "e" #'mrc-text-to-xml-inner-element))
+               "m" #'mrc-text-to-xml-line))
 
 #+end_src
 
 Das sollte aber erst geladen werden, wenn =nxml= geladen wird:
 
-#+begin_src elisp
-(after! nxml
+#+begin_src elisp :noweb yes
+(after! nxml-mode
   <<mrc-text-to-xml>>
   <<mrc-text-to-xml-keybindings>>
   )
