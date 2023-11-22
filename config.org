@@ -542,7 +542,9 @@ Von ~(web +lsp)~ wird auch in ~nXML-mode~ LSP kofiguriert und beim ersten Start 
 Da ich viel XQuery brauche, habe ich =xquery-mode= in =packages.el= aktiviert. Zusätzlich habe ich noch ein modul geschrieben, das XQuery-Anfragen an BaseX schickt. Es befindet sich in [[~/.doom.d/lisp/basex.el]]. Das Verzeichnis ist im =load-path=, also müsste =require= hier reichen:
 
 #+begin_src elisp
-(after! xquery (require 'basex))
+(use-package! xquery-mode
+  :config
+  (require 'basex))
 #+end_src
 **** Keybindings
 #+begin_src elisp
