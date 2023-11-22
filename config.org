@@ -945,8 +945,15 @@ Das sollte aber erst geladen werden, wenn =nxml= geladen wird:
 * =packages.el=
 #+name: packages
 #+begin_src elisp :noweb yes :tangle packages.el
-<<org-roam-bibtex-packages>>
+;; <<org-roam-bibtex-packages>>
 
+(unpin! evil-collection)
 (package! xquery-mode)
-;; (package! basex)
+(package! evil-matchit)
+(package! ttl-mode)
+(package! sparql-mode)
+(package! dokuwiki)
+(package! dokuwiki-mode)
+(package! ox-wk)
+(package! denote)
 #+end_src
