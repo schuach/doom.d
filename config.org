@@ -777,6 +777,34 @@ In =init.el= habe ich ~biblio~ aktiviert. Hier nun die entsprechende Konfigurati
        citar-library-paths '("~/Nextcloud/literatur/files/")
        citar-notes-paths '("~/Nextcloud/literatur/notes/"))
 #+end_src
+** dired
+*** =dired-listing-switches=
+Die Optionen, die =ls= mitgegeben werden. =-l= muss immer mitgegeben werden.
+
+- =a= :: alle Dateien (auch die, die mit "." beginnen) anzeigen
+- =h= :: menschenlesbare Größenangaben
+- =l= :: long-listing
+- =v= :: Näturliche Sortierung von Zahlen in Dateinamen
+
+#+begin_src emacs-lisp
+(setq dired-listing-switches "-ahlv --time-style=long-iso --group-directories-first")
+#+end_src
+
+
+*** Gelöschte Dateien in Papierkorb verschieben
+Sicher ist sicher.
+
+#+begin_src emacs-lisp
+(setq delete-by-moving-to-trash t
+      trash-directory "~/.local/share/Trash/files/")
+#+end_src
+
+Symlink zum Papierkorb ins Home-Verzeichnis (zur Bequemlichkeit):
+#+begin_src shell :tangle no
+cd ~/
+ln -s ~/.local/share/Trash .
+#+end_src
+
 ** magit
 *** forge
 Um auf gitlab-issues etc. zuzugreifen braucht es ein bisschen config.
