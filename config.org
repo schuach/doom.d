@@ -635,6 +635,7 @@ Ich habe =mu= (und emacs) als snap installiert, daher muss der load-path angepas
         '(("/obvsg/INBOX" . ?i)
           ("/schuhu/INBOX" . ?s)
           ("/gmail/INBOX" . ?g)
+          ("/schuhu_mjn/INBOX" . ?m)
           ))
 
 #+end_src
@@ -691,9 +692,6 @@ In der ursprünglichen Einstellung hat das Datum im header-view keinen Platz.
 "Stefan Schuh     Die Österreichische Bibliothekenverbund und Service\n"
 "                                               Gesellschaft m. b. H.\n"
 "Tel: +43 1 4035158-65                  A-1020 Wien, Raimundgasse 1/3"
-
-
-
 ))
                       ))
 (set-email-account! "schuhu"
@@ -708,19 +706,17 @@ In der ursprünglichen Einstellung hat das Datum im header-view keinen Platz.
                                                  "Maria-Pachleitner-Straße 51/10\n"
                                                  "8053 Graz"))))
 
-(set-email-account! "uni"
-                    '(( user-mail-address	     . "stefan.schuh@uni-graz.at" )
-                      ( user-full-name	     . "Stefan Schuh" )
-                      ( mu4e-compose-signature  .   (concat
-                                                     "Mag. Stefan Schuh (B.A.)   https://ub.uni-graz.at/\n"
-                                                     "mailto:stefan.schuh@uni-graz.at fon:+43-316-380-1461\n"
-                                                     "Universitätsbibliothek Graz, Medienbearbeitung:\n"
-                                                     "Universitätsplatz 3a, 8010 Graz"))
-                      ;; special folders
-                      (mu4e-drafts-folder . "/uni/drafts")
-                      (mu4e-sent-folder . "/uni/sent")
-                      (mu4e-trash-folder . "/uni/trash")
-                      (mu4e-refile-folder . "/uni/Archiv")))
+(set-email-account! "mjn-schuhu"
+                    '((mu4e-sent-folder . "/schuhu_mjn/Gesendet")
+                      (mu4e-drafts-folder . "/schuhu_mjn/Drafts")
+                      (mu4e-trash-folder . "/schuhu_mjn/Papierkorb")
+                      (mu4e-refile-folder . "/schuhu_mjn/Archiv")
+                      (user-mail-address . "mjn@schuhu.at")
+                      (user-full-name . "Mutant Admin")
+                      (mu4e-compose-signature . (concat
+                                                 "Dämmergewölbe 3, Die Arche"))
+                      ))
+
 (set-email-account! "gmail"
                     '((user-mail-address . "stefan.schuh.ba@gmail.com")
                       (user-full-name . "Stefan Schuh")
@@ -738,6 +734,13 @@ Hier muss in Doom Emacs offenbar nicht so viel gemacht werden. Durch das einrich
 :ID:       9dc6ef65-8349-4f76-81ad-cc38b1766a2c
 :END:
 Wie im Block [[mail-general][mail-general]] zu sehen ist, ist werden die Mails über =msmtp= gesendet. Die Konfiguration ist in meiner globalen Konfiguration: [[file:~/projects/system-config/config.org::*=msmtp=][=msmtp=]]
+*** Benachrichtigungston
+Ich will nicht, dass ein Ton abgespielt wird, wenn es neue E-Mails gibt.
+
+#+name: mu4e-alert-bell-cmd
+#+begin_src elisp
+(setq +mu4e-alert-bell-cmd nil)
+#+end_src
 
 *** Alles zusammensetzen :noexport:
 Hier die Mail-Konfiguration als ganzes:
@@ -745,12 +748,13 @@ Hier die Mail-Konfiguration als ganzes:
 #+begin_src elisp :noweb yes
 (after! mu4e
    ;; load package to be able to capture emails for GTD
-   (require 'org-mu4e)
+   ;; (require 'org-mu4e)
    <<mu4e-maildir-shortcuts>>
    <<bullets>>
    <<mail-general>>
    <<mail-accounts>>
    <<headers-fields>>
+   <<mu4e-alert-bell-cmd>>
    )
 #+end_src
 ** Emacs everywhere
