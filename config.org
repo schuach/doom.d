@@ -177,7 +177,37 @@ Für die Funktion =markdown-preview= braucht man einen Markdown-Compiler:
 #+begin_src shell :tangle no
 sudo npm --global install marked
 #+end_src
+** denote
+Derzeit gibt es kein Modul für =denote= (vielleicht schreibe ich mal eines), also kommt das package in [[*=packages.el=][=packages.el=]].
 
+*DOKUMENTATION:* https://protesilaos.com/emacs/denote
+
+*** Grundkonfiguration
+Im der Doku gibt es eine Beispielkonfiguration. Siehe dort.
+
+Zuallererst müssen wir das Paket laden und das Verzeichnis festlegen, in dem die Dateien abgelegt werden.
+#+begin_src elisp
+(use-package! denote
+  :init
+  (setq denote-directory (expand-file-name "~/projects/notes/"))
+  (setq denote-known-keywords '("basex" "emacs" "meeting" "xquery"))
+  (add-hook 'dired-mode-hook #'denote-dired-mode-in-directories))
+#+end_src
+*** Keybindings
+#+begin_src elisp
+(map! :after denote
+      :leader
+      (:prefix ("d" . "denote")
+               "n" #'denote))
+#+end_src
+#+end_src
+*** Zusätzliche Pakete
+**** TODO =citar-denote=
+https://github.com/pprevos/citar-denote/
+**** TODO =consult-notes=
+https://github.com/mclear-tools/consult-notes
+**** TODO =denote-menu=
+https://github.com/namilus/denote-menu
 ** org-mode
 :LOGBOOK:
 CLOCK: [2022-02-08 Di 16:48]--[2022-02-08 Di 16:53] =>  0:05
@@ -287,16 +317,19 @@ Zuerst muss das ~+noter~-flag in =init.el= gesetzt sein. Ich habe meine Literatu
        :desc "org-noter-insert-note" "n i" #'org-noter-insert-note
        :desc "org-noter-insert-precise-note" "n I" #'org-noter-insert-precise-note)
 #+end_src
-*** org-roam
+*** HOLD org-roam
 :PROPERTIES:
 :LAST_EDIT: 2021-01-14
 :END:
+*2023-11-02: Modul deaktiviert* Ich will es vorerst mal mit =denote= versuchen. Wenn ich mehr brauche, kann ich das dann immer noch machen. Daher liegt das da mal auf Eis. Wichtig: Man kann beide Packages (=denote= und =org-roam2=) gleichzeitig verwenden, indem man einfach nur für die richtige ID sorgt (nicht von mir selbst getestet, aber ich werde es in =denote= mal so konfigurieren, dass ich dann problemlos migrieren kann): https://org-roam.discourse.group/t/denotes-file-naming-scheme-and-org-roam/2769/4
+
+
 Mir gefällt die Idee, den Luhmannschen Zettelkasten in =org-mode= zu implementieren, also probiere ich das mal aus. Dazu muss in =init.el= bei ~org~ das Flag ~+roam2~ gesetzt sein.
 
 Dokumentation zu =org-roam= gibt es unter https://www.orgroam.com/manual.html, bzw. direkt im Emacs-Info-System (=SPC h i=).
 
 Zuerst muss =org-roam= wissen, wo die Dateien sind:
-#+begin_src elisp
+#+begin_src elisp :tangle no
 (setq org-roam-directory "~/Nextcloud/org/org-roam/")
 #+end_src
 
@@ -321,7 +354,7 @@ Zuerst muss einmal das Paket geladen werden, etc. Dazu muss folgendes in =packag
 Und dann noch die Minimalkonfiguration:
 
 #+name: org-roam-bibtex
-#+begin_src elisp
+#+begin_src elisp :tangle no
 (use-package! org-roam-bibtex
   :after org-roam)
 #+end_src
