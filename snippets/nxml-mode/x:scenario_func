@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: x:scenario_func
+# key: xfunc
+# --
+<x:scenario label="$1">
+  <x:call function="$2">
+    <x:param name="$3"
+             select="" />
+  </x:call>
+  <x:expect label="$0"
+            select="" />
+</x:scenario>
