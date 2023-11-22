@@ -12,7 +12,7 @@
     ("zhb" "Hauptbibliothek" nil :count 0)
     ("zhss" "Hochschulschrift" nil :count 0)
     ("zhssn" "Hochschulschriften" nil :count 0)
-    ("zie" "Internet Explorer" nil :count 1)
+    ("zie" "Internet Explorer" nil :count 2)
     ("zkatin" "Katalogisiererinnen und Katalogisierer" nil :count 0)
     ("zoa" "Open Access" nil :count 0)
     ("zqa" "∀x" nil :count 0)
@@ -40,10 +40,15 @@
     ("üva" "Verantwortlichkeitsangabe" nil :count 0)
    ))
 
+(define-abbrev-table 'markdown-mode-abbrev-table
+  '(
+    ("wcm" ":white_check_mark:" nil :count 2)
+   ))
+
 (define-abbrev-table 'mu4e-compose-mode-abbrev-table
   '(
     ("Lgs" "Liebe Grüße
-Stefan" nil :count 1)
+Stefan" nil :count 2)
     ("jlssvs" "Josef Labner
 Stefan Schuh
 Verena Schaffner" nil :count 1)
