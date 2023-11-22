@@ -7,6 +7,13 @@
 #+begin_src emacs-lisp
 ;;; config.el -*- lexical-binding: t; -*-
 #+end_src
+** Symbolschriftarten
+Wenn die Fonts in der Modeline nicht funktionieren, müssen vielleicht noch Schriften nachinstalliert werden:
+
+#+begin_src elisp :tangle no
+(nerd-icons-install-fonts)
+#+end_src
+
 ** Funktionen
 *** =async-shell-command-no-window=
 Ich möchte manchmal asynchrone Shell-Kommandos ausführen, aber u. U. den Puffer "Asynchronous Shell Command" nicht sehen. Anwendungsbeispiel: Wenn ich den HTML-Report von XSPEC bereits offen habe, interessiert mich der Shell output nicht. Nachdem =async-shell-command= keine einfache Option hat, den Puffer zu unterdrücken, habe ich das hier gefunden:
@@ -100,6 +107,10 @@ Damit im Normalmodus die Navigation innerhalb von umgebrochenen langen Zeilen fu
 
 #+begin_src elisp :tangle no
 (setq evil-respect-visual-line-mode t)
+#+end_src
+**** evil-matchit
+#+begin_src elisp
+(global-evil-matchit-mode 1)
 #+end_src
 ** Abbrevs
 Ich verwende gerne und ausgiebig abbrevs. Gerade für immer wiederkehrenden Fluff. Hier also der Pfad zur entsprechenden Datei:
@@ -235,13 +246,23 @@ Die wichtigste Klasse für mich ist der KOMA-Artikel. Diese Klassendefinition ha
 *** ob-xquery
 =org-babel=-Integration für XQuery. Voraussetzung ist, dass =basex= installiert ist. Der Code ist in [[~/.doom.d/lisp/ob-xquery.el]]. Natürlich müssen wir es initialisieren:
 
-#+name ob-xquery
-#+begin_src elisp
+#+name: ob-xquery
+#+begin_src elisp :tangle no
 (require 'ob-xquery)
 (add-to-list 'org-babel-load-languages '(xquery . t))
 (add-to-list 'org-structure-template-alist '("x". "src xquery"))
 #+end_src
+*** ox-twiki
+Um Wikitext für Foswiki exportieren zu können, verwende ich dieses Modul:
 
+https://github.com/dfeich/org8-wikiexporters
+
+Ich habe =ox-twiki.el= in meinen load-path (=~/.doom.d/lisp/=) kopiert und braucht es noch:
+
+#+name: ox-twiki
+#+begin_src elisp :tangle no
+(use-package! ox-twiki)
+#+end_src
 
 *** org-noter
 Zuerst muss das ~+noter~-flag in =init.el= gesetzt sein. Ich habe meine Literatur in einem Verzeichnis, die Notizen dazu in einem anderen. Jedenfalls ist das Verzeichnis, das ich für die Notizen verwende nicht dort, wo es defaultmäßig konfiguriert ist. Daher:
@@ -306,6 +327,8 @@ Gewisse =org-struct-templates= werden expandiert, aber wenn ich =org-structure-t
 #+name: org-tempo
 #+begin_src elisp
 (require 'org-tempo)
+
+(add-to-list 'org-structure-template-alist '("p" . "src python"))
 #+end_src
 
 Vielleicht gehe ich dem noch nach. Kann sein, dass =doom= das alles über =yasnippet= macht?
@@ -401,18 +424,17 @@ Viele Dinge müssen erst geladen werden, nachdem =org= geladen wurde. Damit in d
   <<org-capture-templates>>
   <<org-attach-store-link-p>>
   <<koma-article>>
-<<<<<<< Updated upstream
   <<ob-xquery>>
+  <<ox-twiki>>
   <<local-org-extract-src-content>>
-=======
   <<tree-slide>>
->>>>>>> Stashed changes
   )
 #+end_src
 
 ** python
 *** LSP
 =pyright= benötigt [[file:~/projects/system-config/config.org::*node][node]] > 12.
+
 *** Formatter
 =pyright= stellt als LSP-Server keine Formatierungsfunktion zur Verfügung. Daher muss als Backend für das ~format~ Modul =black= installiert sein:
 
@@ -423,7 +445,7 @@ sudo pip3 install black
 Der =doom doctor= ist unzufrieden mit mir. Es fehlen noch ein paar Pakete:
 
 #+begin_src shell :tangle no
-sudo pip3 install pyflakes isort pipenv nose pytest
+sudo pip3 install pyflakes isort pipenv nose pytest poetry
 #+end_src
 ** shell
 *** externe Abhängigkeiten
@@ -432,7 +454,8 @@ Für Linting von Shell-Skripten braucht man =shellcheck=. Das kann zwar mit =zsh
 #+begin_src shell :tangle no
 sudo pkcon install shellcheck
 #+end_src
-
+** TTL (Turtle)
+Ich habe =ttl-mode= zu =packages.el= hinzugefügt.
 ** web
 *** LSP
 Hier verwende ich derzeit =html-ls=. Formatieren geht über diesen Server nicht, daher muss das Modul ~format~ aktiviert und =tidy= installiert sein:
