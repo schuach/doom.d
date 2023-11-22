@@ -127,6 +127,16 @@ Ich verwende gerne und ausgiebig abbrevs. Gerade für immer wiederkehrenden Fluf
 * Sprachen
 ** LSP allgemein
 In =init.el= habe ich ~lsp~ aktiviert. Bei den entsprechenden Sprachen ist dementsprechend auch das Flag ~lsp~ zu setzen.
+
+Damit auch in org-src-Puffern LSP unterstützung da ist, braucht muss diese Funktion vorhanden sein (mit der jeweiligen Sprache, hier =python= als Postfix):
+#+begin_src emacs-lisp
+(defun org-babel-edit-prep:python (babel-info)
+  (setq-local buffer-file-name (->> babel-info caddr (alist-get :tangle)))
+  (lsp))
+#+end_src
+
+Siehe hier: https://github.com/emacs-lsp/lsp-mode/issues/2842
+
 ** Common Lisp
 :LOGBOOK:
 :CREATED: 2022-01-10
