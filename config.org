@@ -7,7 +7,13 @@
 #+begin_src emacs-lisp
 ;;; config.el -*- lexical-binding: t; -*-
 #+end_src
-** Symbolschriftarten
+** Fonts
+Um den richtigen Namen einer Schriftart zu finden, verwende =M-x discribe-font=.
+
+#+begin_src emacs-lisp
+(setq doom-font (font-spec :family "Triplicate A Code" :size 20))
+#+end_src
+*** Symbolschriftarten
 Wenn die Fonts in der Modeline nicht funktionieren, müssen vielleicht noch Schriften nachinstalliert werden:
 
 #+begin_src elisp :tangle no
@@ -42,7 +48,7 @@ Ich möchte manchmal asynchrone Shell-Kommandos ausführen, aber u. U. den Puffe
 ** UI
 *** Theme
 #+begin_src elisp
-(setq doom-theme 'doom-dracula)
+(setq doom-theme 'doom-solarized-dark)
 #+end_src
 *** Window selection
 In =init.el= habe ich =(window-select +numbers)= aktiviert. Window selection geht nun über =SPC w {n}=, wobei =n= die Nummer des Fensters ist.
@@ -64,6 +70,13 @@ Macht die Hints von =ace-window= größer und bunter. Viel besser zu sehen. Das 
     :weight bold :height 2.5 :box (:line-width 10 :color "#F92660")))
 #+end_src
 ***** TODO aw-leading-char-face automatisch an Theme anpassen
+*** Zoom
+#+begin_src emacs-lisp
+(map! :leader
+      (:prefix ("z" . "zoom/resize")
+               "z" #'+hydra/text-zoom/body
+               "n" #'+hydra/window-nav/body))
+#+end_src
 ** Completion
 Ich verwende das =vertico=-Modul.
 *** Embark
@@ -74,6 +87,8 @@ Darin enthalten ist auch =embark=. =embark-act= hat standardmäßig zwei Binding
 (map! "C-ö"             #'embark-act
       (:map minibuffer-local-map
        "C-ö"            #'embark-act
+       "C-ü"            #'embark-select
+       "C-c C-ü"        #'embark-act-all
        "C-c C-ö"        #'embark-export))
 #+end_src
 ** Kalender
@@ -142,16 +157,7 @@ Siehe hier: https://github.com/emacs-lsp/lsp-mode/issues/2842
 :CREATED: 2022-01-10
 :LAST_EDIT: 2022-01-28
 :END:
-*STAND 2022-01-28: INAKTIV*: Derzeit habe ich keine Zeit, mich weiter mit dem Buch zu beschäftigen, daher habe ich das Modul wieder deaktiviert.
 
-
-Weil ich das Buch "Land of Lisp" durcharbeite, habe ich in =init.el= auch das entsprechende Modul (~common-lisp~) aktiviert.
-
-Das Buch geht davon aus, dass ich =CLISP= als Interpreter verwende, nicht wie vom Modul vorgesehen =SBCL=. Kein Problem:
-
-#+begin_src elisp :tangle no
-(setq inferior-lisp-program "clisp")
-#+end_src
 ** drools
 Für drools habe ich folgendes gefunden: https://github.com/pdorrell/rules-editing-mode. Dafür gibt es kein MELPA-Paket, daher habe ich eine lokale Kopie gemacht und [[Load Path][load-path]] angepasst.
 
@@ -490,6 +496,13 @@ Der =doom doctor= ist unzufrieden mit mir. Es fehlen noch ein paar Pakete:
 #+begin_src shell :tangle no
 sudo pip3 install pyflakes isort pipenv nose pytest poetry
 #+end_src
+*** poetry
+Poetry scheint permanent das venv zu checken, was nervt. Ich wechsle nicht permanent zwischen Projekten. Daher setze ich die Variable auf =projectile=. D. h. der check passiert nur beim Wechsel zwischen Projekten. Sollte hoffentlich passen. Mal sehen, wie es mit =org-babel= spielt.
+
+#+begin_src emacs-lisp
+(after! poetry
+  (setq poetry-tracking-strategy 'projectile))
+#+end_src
 ** shell
 *** externe Abhängigkeiten
 Für Linting von Shell-Skripten braucht man =shellcheck=. Das kann zwar mit =zsh= nichts anfangen, aber bei der Komplexität meiner Skripten reicht =bash= wohl meistens.
@@ -767,6 +780,7 @@ Für Emacs everywhere muss ich nicht viel mehr tun, als die Zeile in =init.el= v
         :localleader doom-localleader-key #'emacs-everywhere-finish-or-ctrl-c-ctrl-c))
 #+end_src
 
+
 * tools
 ** biblio
 In =init.el= habe ich ~biblio~ aktiviert. Hier nun die entsprechende Konfiguration:
@@ -941,6 +955,25 @@ Das sollte aber erst geladen werden, wenn =nxml= geladen wird:
   <<mrc-text-to-xml-keybindings>>
   )
 #+end_src
+* temp
+#+begin_src emacs-lisp
+(font-lock-add-keywords
+ 'drools-mode
+ `(
+   ;; tags and indicators
+   ("^=\\(00[1-9]\\)"
+    (1 font-lock-keyword-face))
+   ("^=\\([0-9]\\{3\\}\\) ?\\(..\\).*\\$\\$"
+    (1 font-lock-keyword-face)
+    (2 font-lock-type-face))
+   ;; subfields
+   ("\\(\\$\\$.\\)"
+    (1 font-lock-function-name-face))
+   )
+t)
+#+end_src
+
+
 
 * =packages.el=
 #+name: packages
@@ -956,4 +989,6 @@ Das sollte aber erst geladen werden, wenn =nxml= geladen wird:
 (package! dokuwiki-mode)
 (package! ox-wk)
 (package! denote)
+(package! typst-ts-mode
+  :recipe (:host sourcehut :repo "meow_king/typst-ts-mode"))
 #+end_src
