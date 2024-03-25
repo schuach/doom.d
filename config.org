@@ -249,6 +249,11 @@ Um (für XQuery) Inhalte von Blöcken in header-args übernehmen zu können, bra
 #+end_src
 
 Danke Stackoverflow! https://emacs.stackexchange.com/questions/29131/get-contents-of-a-named-source-block
+**** Relative file-links verwenden
+Wenn file-links via =org-insert-link= eingefügt werden, sollen die Pfade relativ sein.
+#+begin_src emacs-lisp
+(setq org-link-file-path-type 'relative)
+#+end_src
 
 *** Agenda
 Ohne Worte:
@@ -309,11 +314,18 @@ Ich habe =ox-twiki.el= in meinen load-path (=~/.doom.d/lisp/=) kopiert und brauc
 #+begin_src elisp :tangle no
 (use-package! ox-twiki)
 #+end_src
+*** ox-gfm
+Der standard-Exporter für Markdown kann nur Basis-Markdown. D. h. Tabellen etc. werden in HTML umgewandelt. Damit die erweiterte Syntax von GitHub Flavored Markdown zum Einsatz kommt, füge ich =ox-gfm= zu den =packages.el= hinzu. Damit es auch im dispatcher aufscheint, muss man das Paket auch laden:
+
+#+name: ox-gfm
+#+begin_src emacs-lisp
+(use-package! ox-gfm)
+#+end_src
 
 *** org-noter
 Zuerst muss das ~+noter~-flag in =init.el= gesetzt sein. Ich habe meine Literatur in einem Verzeichnis, die Notizen dazu in einem anderen. Jedenfalls ist das Verzeichnis, das ich für die Notizen verwende nicht dort, wo es defaultmäßig konfiguriert ist. Daher:
 #+begin_src elisp
-(setq org-noter-notes-search-path "~/Nextcloud/literatur/notes/")
+(setq org-noter-notes-search-path '("~/Nextcloud/literatur/notes/"))
 #+end_src
 
 **** TODO Keybindings
@@ -475,6 +487,7 @@ Viele Dinge müssen erst geladen werden, nachdem =org= geladen wurde. Damit in d
   <<koma-article>>
   <<ob-xquery>>
   <<ox-twiki>>
+  <<ox-gfm>>
   <<local-org-extract-src-content>>
   <<tree-slide>>
   )
@@ -858,6 +871,7 @@ Daher kommen die Daten in ~~/.netrc~, die ich eh für ~smtpmail~ in Verwendung h
 (add-to-list 'auth-sources "~/.netrc")
 #+end_src
 ** mrk2xml
+*** Externes Python-Script
 Ich habe ein Script namens "[[file:~/projects/tools/mrk2xml/mrk2xml.py][mrk2xml.py]]", das MARCBreaker (und das OBVSG-XML-Basisformat) in XML-Snippets umwandelt. Hier ein paar Funktionen, für entsprechende Aufrufe:
 
 #+name: mrc-text-to-xml
@@ -955,6 +969,11 @@ Das sollte aber erst geladen werden, wenn =nxml= geladen wird:
   <<mrc-text-to-xml-keybindings>>
   )
 #+end_src
+*** Elisp
+#+begin_src emacs-lisp
+(require 'mrk2xml)
+(mrk2xml-doom-bind-keys)
+#+end_src
 * temp
 #+begin_src emacs-lisp
 (font-lock-add-keywords
@@ -988,6 +1007,7 @@ t)
 (package! dokuwiki)
 (package! dokuwiki-mode)
 (package! ox-wk)
+(package! ox-gfm)
 (package! denote)
 (package! typst-ts-mode
   :recipe (:host sourcehut :repo "meow_king/typst-ts-mode"))
