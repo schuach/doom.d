@@ -832,6 +832,81 @@ cd ~/
 ln -s ~/.local/share/Trash .
 #+end_src
 
+** ebib
+Zur Verwaltung von bibtex-Daten verwende ich =ebib=. Dafür gibt es kein Doom-Modul, also füge ich =ebib= zu [[* =packages.el=][=packages.el=]] hinzu.
+
+#+begin_src emacs-lisp
+;; use biblatex
+(setq ebib-bibtex-dialect 'biblatex)
+
+;; always load my main .bib-file
+(setq ebib-preload-bib-files '("~/Nextcloud/literatur/bibliographie.bib"))
+#+end_src
+
+
+*** Generieren von cite-keys
+Die Art, wie die Keys von =bibtex-generate-autokey= gebildet werden, gefällt mir nicht. Also sorgen wir vorerst mal dafür, dass die Keys immer die Form =authorYear= haben. Das kann natürlich auch zu uneindeutigen Keys führen. Daher setzen wir =ebib-uniquify-keys=, damit =ebib= automatisch einen Buchstaben anhängt:
+
+#+begin_src emacs-lisp
+(setq bibtex-autokey-name-year-separator ""
+      bibtex-autokey-year-title-separator ""
+      bibtex-autokey-year-length 4
+      bibtex-autokey-titleword-length 0
+      bibtex-autokey-titlewords 0
+      ebib-uniquify-keys t)
+#+end_src
+
+*CAVEAT*: Wenn es keine Verfasser:in gibt, ist der cite-key nur das Jahr. Da muss man dann halt nacharbeiten.
+
+*** Dateien
+Wenn ich zu einem Zitat ein PDF habe, kommt dieses in =files/{citekey}.pdf=. D. h.
+
+#+begin_src emacs-lisp
+(setq ebib-file-search-dirs '("~/Nextcloud/literatur/files"))
+#+end_src
+
+**** Öffnen von Dateien
+=Ebib= versucht, pdf-Dateien mit =xpdf= zu öffen. Das habe ich gar nicht installiert. Eigentlich möchte ich sie mit =pdftools= ansehen, daher setze ich den Wert in der =ebib-file-associations= auf =nil=.
+
+#+begin_src emacs-lisp
+(after! ebib
+  (setf (alist-get "pdf" ebib-file-associations) nil))
+#+end_src
+*** Keybindings
+Ebib starten etc.:
+
+#+begin_src emacs-lisp
+(map!  :leader
+       (:prefix ("e" . "ebib")
+                "e" #'ebib
+                "i" #'ebib-import-entries
+                "I" #'ebib-import-file
+                "q" #'ebib-quit
+                "z" #'ebib-lower))
+#+end_src
+
+=ebib-index-mode-map=:
+
+#+begin_src emacs-lisp
+(map! :after ebib
+      :map ebib-index-mode-map
+      :localleader
+      :desc "Save current database" "s" #'ebib-save-current-database
+      :desc "Save all databases" "S" #'ebib-save-all-databases)
+
+#+end_src
+
+
+=ebib-entry-mode-map=:
+#+begin_src emacs-lisp
+(map! :after ebib
+      :map ebib-entry-mode-map
+      :desc "copy field contents" "y" #'ebib-copy-current-field-contents
+      :desc "kill field contents" "d" #'ebib-kill-current-field-contents
+      :desc "insert into field" "p" #'ebib-yank-current-field-contents)
+#+end_src
+
+
 ** magit
 *** forge
 Um auf gitlab-issues etc. zuzugreifen braucht es ein bisschen config.
@@ -1006,6 +1081,8 @@ t)
 (package! sparql-mode)
 (package! dokuwiki)
 (package! dokuwiki-mode)
+(package! biblio)
+(package! ebib)
 (package! ox-wk)
 (package! ox-gfm)
 (package! denote)
