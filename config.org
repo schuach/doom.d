@@ -183,6 +183,24 @@ Für die Funktion =markdown-preview= braucht man einen Markdown-Compiler:
 #+begin_src shell :tangle no
 sudo npm --global install marked
 #+end_src
+
+GFM kann man sich mit =grip-mode= auch im Browser ansehen. Dafür muss man das entsprechende Flag (=+grip=) in =init.el= setzen und =grip= installieren:
+
+#+begin_src shell :tangle no
+pip3 install grip
+#+end_src
+
+*** ToC beim Speichern aktualisieren
+Wenn man mit =markdown-toc-generate-toc= ein Inhaltsverzeichnis eingefügt hat, will man wahrscheinlich auch, dass das beim Speichern automatisch aktualisiert wird. Daher:
+
+#+begin_src emacs-lisp
+(add-hook 'markdown-mode-hook
+          (lambda ()
+            (add-hook 'before-save-hook 'markdown-toc-refresh-toc nil 't)))
+#+end_src
+
+Danke Stackoverflow! https://stackoverflow.com/questions/6138029/how-to-add-a-hook-to-only-run-in-a-particular-mode
+
 ** denote
 Derzeit gibt es kein Modul für =denote= (vielleicht schreibe ich mal eines), also kommt das package in [[*=packages.el=][=packages.el=]].
 
