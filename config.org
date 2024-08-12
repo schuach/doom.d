@@ -224,6 +224,8 @@ Initialisierung:
 *** Test runner
 Für die Tests mit =jest= habe ich in =packages.el= das Package =jest-test-mode= hinzugefügt.
 
+Github: https://github.com/rymndhng/jest-test-mode
+
 Damit der =jest-test-mode= ist ein minor mode. Damit er immer aktiviert wird, wenn ich TS bearbeite, braucht es diesen hook:
 
 #+begin_src emacs-lisp
