@@ -206,6 +206,47 @@ Initialisierung:
 (set-extension-mode ".dslr" 'drools-mode)
 (set-extension-mode ".src" 'drools-mode)
 #+end_src
+** JS/TS
+*** TODO Formatter
+*** Indent
+
+#+begin_src emacs-lisp
+(after! typescript-mode
+  (setq typescript-indent-level 2)
+  )
+#+end_src
+*** Test runner
+Für die Tests mit =jest= habe ich in =packages.el= das Package =jest-test-mode= hinzugefügt.
+
+Damit der =jest-test-mode= ist ein minor mode. Damit er immer aktiviert wird, wenn ich TS bearbeite, braucht es diesen hook:
+
+#+begin_src emacs-lisp
+(add-hook 'typescript-mode-hook 'jest-test-mode)
+#+end_src
+
+Und ein paar Keybindings braucht es auch noch:
+
+#+begin_src emacs-lisp
+(map! :after typescript-mode
+      :map typescript-mode-map
+      :localleader
+      (:prefix ("t" . "test")
+       :desc "rerun last test command" "a" #'jest-test-rerun-test
+       :desc "run jest on file" "f" #'jest-test-run
+       :desc "run all tests in project" "p" #'jest-test-run-all-tests
+       :desc "run the it/test/describe block at the current point" "t" #'jest-test-run-at-point))
+#+end_src
+
+#+RESULTS:
+
+*** org-babel
+
+#+begin_src emacs-lisp
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((typescript . t)
+   ))
+#+end_src
 
 ** Markdown
 *** externe Abhängigkeiten
@@ -513,6 +554,13 @@ Viele Dinge müssen erst geladen werden, nachdem =org= geladen wurde. Damit in d
   <<local-org-extract-src-content>>
   <<tree-slide>>
   )
+#+end_src
+** plantuml
+#+begin_src emacs-lisp
+(setq plantuml-default-exec-mode 'jar)
+(setq org-plantuml-jar-path "~/plantuml.jar")
+
+(add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
 #+end_src
 
 ** python
@@ -915,7 +963,6 @@ Ebib starten etc.:
       :localleader
       :desc "Save current database" "s" #'ebib-save-current-database
       :desc "Save all databases" "S" #'ebib-save-all-databases)
-
 #+end_src
 
 
@@ -1113,7 +1160,10 @@ t)
 (package! ebib)
 (package! ox-wk)
 (package! ox-gfm)
+(package! ox-reveal)
 (package! denote)
+(package! plantuml-mode)
 (package! typst-ts-mode
   :recipe (:host sourcehut :repo "meow_king/typst-ts-mode"))
+(package! jest-test-mode)
 #+end_src
