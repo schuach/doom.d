@@ -139,6 +139,12 @@ Ich verwende gerne und ausgiebig abbrevs. Gerade für immer wiederkehrenden Fluf
 #+begin_src elisp
 (add-to-list 'load-path (concat (getenv "HOME") "/.doom.d/lisp/")  )
 #+end_src
+** Sortierung
+Bei =sort-lines= und anderen Sortierfunktionen will ich, dass die Groß-/Kleinschreibung ignoriert wird.
+
+#+begin_src emacs-lisp
+(setq sort-fold-case t)
+#+end_src
 * Sprachen
 ** LSP allgemein
 In =init.el= habe ich ~lsp~ aktiviert. Bei den entsprechenden Sprachen ist dementsprechend auch das Flag ~lsp~ zu setzen.
@@ -323,7 +329,7 @@ Ohne Worte:
 
 #+NAME: org-agenda-files
 #+BEGIN_SRC elisp :tangle no
-(add-to-list 'org-agenda-files "~/Nextcloud/org")
+(add-to-list 'org-agenda-files "~/Nextcloud/org" "~/projects/")
 #+END_SRC
 *** Keybindings
 =C-c C-c= auf =localleader localleader=. In meiner [[*Leader, localleader, ex][derzeitigen Konfiguration]] heißt das =ü ü=.
