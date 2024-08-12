@@ -158,6 +158,37 @@ Siehe hier: https://github.com/emacs-lsp/lsp-mode/issues/2842
 :LAST_EDIT: 2022-01-28
 :END:
 
+** denote
+Derzeit gibt es kein Modul für =denote= (vielleicht schreibe ich mal eines), also kommt das package in [[*=packages.el=][=packages.el=]].
+
+*DOKUMENTATION:* https://protesilaos.com/emacs/denote
+
+*** Grundkonfiguration
+Im der Doku gibt es eine Beispielkonfiguration. Siehe dort.
+
+Zuallererst müssen wir das Paket laden und das Verzeichnis festlegen, in dem die Dateien abgelegt werden.
+#+begin_src elisp
+(use-package! denote
+  :init
+  (setq denote-directory (expand-file-name "~/projects/notes/"))
+  (setq denote-known-keywords '("basex" "emacs" "meeting" "xquery"))
+  (add-hook 'dired-mode-hook #'denote-dired-mode-in-directories))
+#+end_src
+*** Keybindings
+#+begin_src elisp
+(map! :after denote
+      :leader
+      (:prefix ("d" . "denote")
+               "n" #'denote))
+#+end_src
+#+end_src
+*** Zusätzliche Pakete
+**** TODO =citar-denote=
+https://github.com/pprevos/citar-denote/
+**** TODO =consult-notes=
+https://github.com/mclear-tools/consult-notes
+**** TODO =denote-menu=
+https://github.com/namilus/denote-menu
 ** drools
 Für drools habe ich folgendes gefunden: https://github.com/pdorrell/rules-editing-mode. Dafür gibt es kein MELPA-Paket, daher habe ich eine lokale Kopie gemacht und [[Load Path][load-path]] angepasst.
 
@@ -200,38 +231,11 @@ Wenn man mit =markdown-toc-generate-toc= ein Inhaltsverzeichnis eingefügt hat, 
 #+end_src
 
 Danke Stackoverflow! https://stackoverflow.com/questions/6138029/how-to-add-a-hook-to-only-run-in-a-particular-mode
-
-** denote
-Derzeit gibt es kein Modul für =denote= (vielleicht schreibe ich mal eines), also kommt das package in [[*=packages.el=][=packages.el=]].
-
-*DOKUMENTATION:* https://protesilaos.com/emacs/denote
-
-*** Grundkonfiguration
-Im der Doku gibt es eine Beispielkonfiguration. Siehe dort.
-
-Zuallererst müssen wir das Paket laden und das Verzeichnis festlegen, in dem die Dateien abgelegt werden.
-#+begin_src elisp
-(use-package! denote
-  :init
-  (setq denote-directory (expand-file-name "~/projects/notes/"))
-  (setq denote-known-keywords '("basex" "emacs" "meeting" "xquery"))
-  (add-hook 'dired-mode-hook #'denote-dired-mode-in-directories))
+*** Fontification von Code-Blocks
+#+begin_src emacs-lisp
+(setq markdown-fontify-code-blocks-natively t)
 #+end_src
-*** Keybindings
-#+begin_src elisp
-(map! :after denote
-      :leader
-      (:prefix ("d" . "denote")
-               "n" #'denote))
-#+end_src
-#+end_src
-*** Zusätzliche Pakete
-**** TODO =citar-denote=
-https://github.com/pprevos/citar-denote/
-**** TODO =consult-notes=
-https://github.com/mclear-tools/consult-notes
-**** TODO =denote-menu=
-https://github.com/namilus/denote-menu
+
 ** org-mode
 :LOGBOOK:
 CLOCK: [2022-02-08 Di 16:48]--[2022-02-08 Di 16:53] =>  0:05
@@ -922,6 +926,12 @@ Ebib starten etc.:
       :desc "copy field contents" "y" #'ebib-copy-current-field-contents
       :desc "kill field contents" "d" #'ebib-kill-current-field-contents
       :desc "insert into field" "p" #'ebib-yank-current-field-contents)
+
+(map! :after ebib
+      :map ebib-entry-mode-map
+      :localleader
+      :desc "Save current database" "s" #'ebib-save-current-database
+      :desc "Save all databases" "S" #'ebib-save-all-databases)
 #+end_src
 
 
