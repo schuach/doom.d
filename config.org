@@ -46,6 +46,7 @@ Ich möchte manchmal asynchrone Shell-Kommandos ausführen, aber u. U. den Puffe
 #+end_src
 
 ** UI
+
 *** Theme
 #+begin_src elisp
 (setq doom-theme 'doom-solarized-dark)
@@ -245,7 +246,11 @@ Und ein paar Keybindings braucht es auch noch:
        :desc "run the it/test/describe block at the current point" "t" #'jest-test-run-at-point))
 #+end_src
 
-#+RESULTS:
+
+Das popup soll automatisch ausgewählt sein, primär, um es mit =q= gleich wieder schließen zu können.
+#+begin_src emacs-lisp
+(set-popup-rule! "^\\*jest-test-compilation\\*" :select t :size 0.45 :side 'right)
+#+end_src
 
 *** org-babel
 
