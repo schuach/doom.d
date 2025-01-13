@@ -8,10 +8,11 @@
 ;;; config.el -*- lexical-binding: t; -*-
 #+end_src
 ** Fonts
-Um den richtigen Namen einer Schriftart zu finden, verwende =M-x discribe-font=.
+Um den richtigen Namen einer Schriftart zu finden, verwende =M-x describe-font=.
 
 #+begin_src emacs-lisp
 (setq doom-font (font-spec :family "Triplicate A Code" :size 20))
+;; (setq doom-font (font-spec :family "Source Code Pro" :size 20))
 #+end_src
 *** Symbolschriftarten
 Wenn die Fonts in der Modeline nicht funktionieren, müssen vielleicht noch Schriften nachinstalliert werden:
@@ -138,7 +139,7 @@ Ich verwende gerne und ausgiebig abbrevs. Gerade für immer wiederkehrenden Fluf
 #+end_src
 ** Load Path
 #+begin_src elisp
-(add-to-list 'load-path (concat (getenv "HOME") "/.doom.d/lisp/")  )
+(add-to-list 'load-path (concat (getenv "HOME") "/.config/doom/lisp/")  )
 #+end_src
 ** Sortierung
 Bei =sort-lines= und anderen Sortierfunktionen will ich, dass die Groß-/Kleinschreibung ignoriert wird.
@@ -146,6 +147,13 @@ Bei =sort-lines= und anderen Sortierfunktionen will ich, dass die Groß-/Kleinsc
 #+begin_src emacs-lisp
 (setq sort-fold-case t)
 #+end_src
+** Case replace
+#+begin_src emacs-lisp
+(setq case-replace nil)
+#+end_src
+
+#+RESULTS:
+
 * Sprachen
 ** LSP allgemein
 In =init.el= habe ich ~lsp~ aktiviert. Bei den entsprechenden Sprachen ist dementsprechend auch das Flag ~lsp~ zu setzen.
@@ -213,6 +221,10 @@ Initialisierung:
 (set-extension-mode ".dslr" 'drools-mode)
 (set-extension-mode ".src" 'drools-mode)
 #+end_src
+** guile
+#+begin_src emacs-lisp
+(setq geiser-guile-binary "guile3.0")
+#+end_src
 ** JS/TS
 *** TODO Formatter
 *** Indent
@@ -249,7 +261,7 @@ Und ein paar Keybindings braucht es auch noch:
 
 Das popup soll automatisch ausgewählt sein, primär, um es mit =q= gleich wieder schließen zu können.
 #+begin_src emacs-lisp
-(set-popup-rule! "^\\*jest-test-compilation\\*" :select t :size 0.45 :side 'right)
+(set-popup-rule! "^\\*jest-test-compilation\\*" :select t :size 0.45)
 #+end_src
 
 *** org-babel
@@ -348,6 +360,28 @@ Ohne Worte:
 #+end_src
 *** LaTeX-Eport
 **** Klassen
+***** LuaLaTeX
+#+name: org-lualatex
+#+begin_src emacs-lisp
+;; lualatex preview
+(setq org-latex-pdf-process
+  '("lualatex -shell-escape -interaction nonstopmode %f"
+    "lualatex -shell-escape -interaction nonstopmode %f"))
+
+(setq luamagick '(luamagick :programs ("lualatex" "convert")
+       :description "pdf > png"
+       :message "you need to install lualatex and imagemagick."
+       :use-xcolor t
+       :image-input-type "pdf"
+       :image-output-type "png"
+       :image-size-adjust (1.0 . 1.0)
+       :latex-compiler ("lualatex -interaction nonstopmode -output-directory %o %f")
+       :image-converter ("convert -density %D -trim -antialias %f -quality 100 %O")))
+
+(add-to-list 'org-preview-latex-process-alist luamagick)
+
+(setq org-preview-latex-default-process 'luamagick)
+#+end_src
 ***** Koma Article
 Die wichtigste Klasse für mich ist der KOMA-Artikel. Diese Klassendefinition habe ich von hier: [[https://orgmode.org/worg/exporters/anno-bib-template-worg.html#orgf3daba4]]
 
@@ -368,7 +402,23 @@ Die wichtigste Klasse für mich ist der KOMA-Artikel. Diese Klassendefinition ha
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+               '("koma-article-big"
+                 "\\documentclass[16pt,a4paper]{scrartcl}
+                \\usepackage[english,ngerman]{babel}
+                \\usepackage{microtype}
+                \\usepackage{tgpagella}
+                \\linespread{1.05}
+                \\usepackage[scale=.9]{tgheros}
+                \\usepackage{tgcursor}
+                \\usepackage{paralist}"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  )
 #+END_SRC
 *** ob-xquery
 =org-babel=-Integration für XQuery. Voraussetzung ist, dass =basex= installiert ist. Der Code ist in [[~/.doom.d/lisp/ob-xquery.el]]. Natürlich müssen wir es initialisieren:
@@ -560,6 +610,7 @@ Viele Dinge müssen erst geladen werden, nachdem =org= geladen wurde. Damit in d
   <<org-default-notes-file>>
   <<org-capture-templates>>
   <<org-attach-store-link-p>>
+  <<org-lualatex>>
   <<koma-article>>
   <<ob-xquery>>
   <<ox-twiki>>
@@ -599,6 +650,21 @@ Poetry scheint permanent das venv zu checken, was nervt. Ich wechsle nicht perma
 (after! poetry
   (setq poetry-tracking-strategy 'projectile))
 #+end_src
+** racket
+Don't use =scheme-mode=.
+#+begin_src emacs-lisp
+(if (equal (assoc "\\.rkt\\'" auto-mode-alist) '("\\.rkt\\'" . scheme-mode))
+    (setf (cdr (assoc "\\.rkt\\'" auto-mode-alist)) 'racket-mode)
+  (add-to-list 'auto-mode-alist ' ("\\.rkt\\'" . racket-mode)))
+#+end_src
+
+#+begin_src emacs-lisp
+(setq geiser-default-implementation 'racket)
+#+end_src
+
+#+RESULTS:
+: racket
+
 ** shell
 *** externe Abhängigkeiten
 Für Linting von Shell-Skripten braucht man =shellcheck=. Das kann zwar mit =zsh= nichts anfangen, aber bei der Komplexität meiner Skripten reicht =bash= wohl meistens.
@@ -627,12 +693,12 @@ sudo npm --global install js-beautify stylelint
 #+end_src
 
 *** tidy
-Die Einrückungen in der Standardeinsteillung nicht wirklich (alles unter ~<body>~ ist auf einer Ebene).
+Die Einrückungen in der Standardeinstellung funktionieren wirklich (alles unter ~<body>~ ist auf einer Ebene).
 
 #+NAME: html-tidy
 #+begin_src elisp
-(set-formatter! 'html-tidy "tidy -q -indent --indent-spaces 2" :modes '(html-mode web-mode))
-(set-formatter! 'html-tidy "tidy -q -xml -indent --indent-spaces 2" :modes '(nxml-mode))
+(set-formatter! 'html-tidy '("tidy -q -indent --indent-spaces 2") :modes '(html-mode web-mode))
+(set-formatter! 'xml-tidy '("tidy" "-q" "-w" "-xml" "-indent" "--indent-spaces 2" "--literal-attributes" ) :modes '(nxml-mode))
 #+end_src
 
 ** XML
@@ -705,11 +771,11 @@ sudo apt install hunspell hunspell-de-at-frami
   (if (equal system-type 'gnu/linux)
       (progn
         (setq ispell-program-name "hunspell")
-        (setq ispell-dictionary "de_AT_frami,en_US")
+        (setq ispell-dictionary "de_AT,en_US")
         ;; ispell-set-spellchecker-params has to be called
         ;; before ispell-hunspell-add-multi-dic will work
         (ispell-set-spellchecker-params)
-        (ispell-hunspell-add-multi-dic "de_AT_frami,en_US"))
+        (ispell-hunspell-add-multi-dic "de_AT,en_US"))
     (setq ispell-dictionary "german8"))
   )
 #+end_src
@@ -745,6 +811,7 @@ Ich habe =mu= (und emacs) als snap installiert, daher muss der load-path angepas
           ("/schuhu/INBOX" . ?s)
           ("/gmail/INBOX" . ?g)
           ("/schuhu_mjn/INBOX" . ?m)
+          ("/stefanschuh/INBOX" . ?p)
           ))
 
 #+end_src
@@ -767,7 +834,7 @@ Sobald ich das weiß, kann ich mich um ein anderes Symbol kümmern. So ist es in
  mu4e-use-fancy-chars nil ; don't use icons, they mess up the linespacing
  mu4e-attachment-dir "~/Downloads"
  mu4e-maildir (expand-file-name "~/Maildir")
- mu4e-get-mail-command "mbsync schuhu obvsg gmail"
+ mu4e-get-mail-command "mbsync schuhu obvsg gmail stefanschuh"
  mu4e-update-interval 180 ;; check for mail every 3 minutes
  sendmail-program (executable-find "msmtp")
  send-mail-function #'smtpmail-send-it
@@ -775,6 +842,7 @@ Sobald ich das weiß, kann ich mich um ein anderes Symbol kümmern. So ist es in
  message-sendmail-extra-arguments '("--read-envelope-from")
  message-send-mail-function #'message-send-mail-with-sendmail)
 #+end_src
+
 
 In der ursprünglichen Einstellung hat das Datum im header-view keinen Platz.
 #+NAME: headers-fields
@@ -815,8 +883,20 @@ In der ursprünglichen Einstellung hat das Datum im header-view keinen Platz.
                                                  "Maria-Pachleitner-Straße 51/10\n"
                                                  "8053 Graz"))))
 
+(set-email-account! "stefanschuh"
+                    '((mu4e-sent-folder . "/stefanschuh/Gesendet")
+                      (mu4e-drafts-folder . "/stefanschuh/Drafts")
+                      (mu4e-trash-folder . "/stefanschuh/Papierkorb")
+                      (mu4e-refile-folder . "/stefanschuh/Archiv")
+                      (user-mail-address . "email@stefanschuh.at")
+                      (user-full-name . "Stefan Schuh")
+                      (mu4e-compose-signature . (concat
+                                                 "Stefan Schuh\n"
+                                                 "Maria-Pachleitner-Straße 51/10\n"
+                                                 "8053 Graz"))))
+
 (set-email-account! "mjn-schuhu"
-                    '((mu4e-sent-folder . "/schuhu_mjn/Gesendet")
+                    '((mu4e-sent-folder . "schuhu_mjn/Gesendet")
                       (mu4e-drafts-folder . "/schuhu_mjn/Drafts")
                       (mu4e-trash-folder . "/schuhu_mjn/Papierkorb")
                       (mu4e-refile-folder . "/schuhu_mjn/Archiv")
@@ -837,6 +917,21 @@ In der ursprünglichen Einstellung hat das Datum im header-view keinen Platz.
 
 *** Kontexte
 Hier muss in Doom Emacs offenbar nicht so viel gemacht werden. Durch das einrichten der Accounts mit dem Makro ~set-email-account!~ funktioniert das Umschalten der Kontexte ohne weitere Konfiguration bisher völlig zu meiner Zufriedenheit.
+*** sent-mail-behaviour
+#+name: mu4e-sent-messages-behavior
+#+begin_src emacs-lisp
+(setq mu4e-sent-messages-behavior 'sent)
+#+end_src
+
+Das folgende funktioniert nicht, warum auch immer:
+#+begin_src emacs-lisp :tangle no
+(setq mu4e-sent-messages-behavior (lambda ()
+                                    (if (string= (message-sendmail-envelope-from) "stefan.schuh.ba@gmail.com")
+       'delete 'sent)))
+#+end_src
+
+#+RESULTS: mu4e-sent-messages-behavior
+| lambda | nil | (if (string= (message-sendmail-envelope-from) stefan.schuh.ba@gmail.com) 'delete 'sent) |
 
 *** Mail senden
 :PROPERTIES:
@@ -864,6 +959,7 @@ Hier die Mail-Konfiguration als ganzes:
    <<mail-accounts>>
    <<headers-fields>>
    <<mu4e-alert-bell-cmd>>
+   <<mu4e-sent-messages-behavior>>
    )
 #+end_src
 ** Emacs everywhere
@@ -1034,7 +1130,14 @@ Daher kommen die Daten in ~~/.netrc~, die ich eh für ~smtpmail~ in Verwendung h
 (add-to-list 'auth-sources "~/.netrc")
 #+end_src
 ** mrk2xml
-*** Externes Python-Script
+*** *OBSOLET* Externes Python-Script
+
+#+begin_quote
+Diese Funktionalitäten werden von [[https://github.com/schuach/mrc.el][mrc.el]] bereitgestellt. Das Python-Script gibt ist inzwischen auch verloren gegangen.
+
+Die Umwandlung des Basisformats in XML fehlt noch. Aber das mache ich, wenn es wieder mal gebraucht wird.
+#+end_quote
+
 Ich habe ein Script namens "[[file:~/projects/tools/mrk2xml/mrk2xml.py][mrk2xml.py]]", das MARCBreaker (und das OBVSG-XML-Basisformat) in XML-Snippets umwandelt. Hier ein paar Funktionen, für entsprechende Aufrufe:
 
 #+name: mrc-text-to-xml
@@ -1108,7 +1211,7 @@ without formatting and indenting."
 =mrc-text-to-xml-inside-element= benötigt das Paket =expand-region.el=. Dieses wird von =doom= mitinstalliert. Der Namespace =+format= gehört auch zu =doom=.
 
 #+name: mrc-text-to-xml-keybindings
-#+begin_src elisp
+#+begin_src elisp :tangle no
 (map! :after nxml-mode
       :map nxml-mode-map
       :localleader
@@ -1126,7 +1229,7 @@ without formatting and indenting."
 
 Das sollte aber erst geladen werden, wenn =nxml= geladen wird:
 
-#+begin_src elisp :noweb yes
+#+begin_src elisp :noweb yes :tangle no
 (after! nxml-mode
   <<mrc-text-to-xml>>
   <<mrc-text-to-xml-keybindings>>
@@ -1134,8 +1237,8 @@ Das sollte aber erst geladen werden, wenn =nxml= geladen wird:
 #+end_src
 *** Elisp
 #+begin_src emacs-lisp
-(require 'mrk2xml)
-(mrk2xml-doom-bind-keys)
+(require 'mrc)
+(mrc-doom-bind-keys)
 #+end_src
 * temp
 #+begin_src emacs-lisp
@@ -1179,4 +1282,6 @@ t)
 (package! typst-ts-mode
   :recipe (:host sourcehut :repo "meow_king/typst-ts-mode"))
 (package! jest-test-mode)
+(package! geiser-racket)
+(package! keycast)
 #+end_src

@@ -39,6 +39,8 @@
     ("üsts" "Stefan Schuh" nil :count 0)
     ("ütest" "Abbrev-Test" nil :count 2)
     ("üva" "Verantwortlichkeitsangabe" nil :count 0)
+    ("zbl" "ZDB-Bestandsdatenlieferung" nil :count 0)
+    ("üra" "\\rightarrow" nil :count 0)
    ))
 
 (define-abbrev-table 'markdown-mode-abbrev-table
