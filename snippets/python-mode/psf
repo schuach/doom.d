@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: pymarc-subfield
+# key: ,psf
+# condition: t
+# --
+Subfield(code="$1", value=$2)$0

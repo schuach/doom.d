@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: doc:doc stylesheet
+# uuid:
+# key: docst
+# condition: t
+# --
+<doc:doc scope="stylesheet">
+  <doc:title>$1</doc:title>
+  <doc:includeMd href="$2" />
+  <doc:desc>$0</doc:desc>
+</doc:doc>

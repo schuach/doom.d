@@ -20,6 +20,16 @@ Wenn die Fonts in der Modeline nicht funktionieren, müssen vielleicht noch Schr
 #+begin_src elisp :tangle no
 (nerd-icons-install-fonts)
 #+end_src
+** Formatter
+*** TODO void variable
+~(void-variable +format-on-save-disabled-modes)~
+
+#+begin_src emacs-lisp :tangle no
+(add-to-list '+format-on-save-disabled-modes 'nxml-mode)
+#+end_src
+
+#+RESULTS:
+| nxml-mode | sql-mode | tex-mode | latex-mode | LaTeX-mode | org-msg-edit-mode |
 
 ** Funktionen
 *** =async-shell-command-no-window=
@@ -27,17 +37,22 @@ Ich möchte manchmal asynchrone Shell-Kommandos ausführen, aber u. U. den Puffe
 
 #+begin_src elisp
 (defun async-shell-command-no-window
-    (command)
+    (command &optional buffer-name)
   (interactive)
-  (let
-      ((display-buffer-alist
+  (let*
+      ((bfr-name (or buffer-name shell-command-buffer-name-async))
+       (display-buffer-alist
         (list
          (cons
-          "\\*Async Shell Command\\*.*"
+          bfr-name
           (cons #'display-buffer-no-window nil)))))
-    (async-shell-command
-     command)))
+       (async-shell-command
+        command bfr-name)))
 #+end_src
+
+#+RESULTS:
+: async-shell-command-no-window
+
 ** Userinfo
 #+begin_src elisp
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
@@ -50,7 +65,7 @@ Ich möchte manchmal asynchrone Shell-Kommandos ausführen, aber u. U. den Puffe
 
 *** Theme
 #+begin_src elisp
-(setq doom-theme 'doom-solarized-dark)
+(setq doom-theme 'doom-oksolar-light)
 #+end_src
 *** Window selection
 In =init.el= habe ich =(window-select +numbers)= aktiviert. Window selection geht nun über =SPC w {n}=, wobei =n= die Nummer des Fensters ist.
@@ -447,6 +462,11 @@ Der standard-Exporter für Markdown kann nur Basis-Markdown. D. h. Tabellen etc.
 #+begin_src emacs-lisp
 (use-package! ox-gfm)
 #+end_src
+*** ox-reveal
+#+begin_src emacs-lisp
+(use-package! ox-reveal)
+(setq org-reveal-root "~/opt/reveal.js")
+#+end_src
 
 *** org-noter
 Zuerst muss das ~+noter~-flag in =init.el= gesetzt sein. Ich habe meine Literatur in einem Verzeichnis, die Notizen dazu in einem anderen. Jedenfalls ist das Verzeichnis, das ich für die Notizen verwende nicht dort, wo es defaultmäßig konfiguriert ist. Daher:
@@ -572,8 +592,8 @@ Ich verwende verschiedene Templates für =org-capture=. Sie werden alle in ~org-
                  "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
                 ;; ("j" "Journal" entry (file+datetree org-journal-file)
                 ;;  "* %?\n%U\n" :clock-in t :clock-resume t)
-                ("B" "Besprechung" entry (file org-default-notes-file)
-                 "* Besprechung mit %? :MEETING:\n%U" :clock-in t :clock-resume t)
+                ("B" "Besprechung" entry (file+olp+datetree local-meetings-file)
+                 "* %?\n%U" :clock-in t :clock-resume t)
                 ("T" "Telefonat" entry (file org-default-notes-file)
                  "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
                 )))
@@ -584,20 +604,33 @@ Die "Inbox"-Datei muss ich natürlich auch noch definieren:
 #+NAME: org-default-notes-file
 #+BEGIN_SRC elisp :tangle no
 (setq org-default-notes-file (concat org-directory "/refile.org"))
+(setq local-meetings-file (concat org-directory "/meetings.org"))
 #+END_SRC
-*** tree-slide
-#+NAME: tree-slide
-#+begin_src elisp :tangle no
-(require 'org-tree-slide nil t)
- (global-set-key (kbd "<f8>") 'org-tree-slide-mode)
-  (global-set-key (kbd "S-<f8>") 'org-tree-slide-skip-done-toggle)
-  (define-key org-tree-slide-mode-map (kbd "<f9>")
-    'org-tree-slide-move-previous-tree)
-  (define-key org-tree-slide-mode-map (kbd "<f10>")
-    'org-tree-slide-move-next-tree)
-  (define-key org-tree-slide-mode-map (kbd "<f11>")
-    'org-tree-slide-content)
+***** Insert datetree-heading
+#+name: my/org-insert-datetree-heading
+#+begin_src emacs-lisp :tangle no
+(defun my/org-insert-datetree-heading ()
+   (interactive)
+   (org-insert-heading)
+   (insert (get-date))
+   (insert "\n"))
+
+(defun get-date ()
+  (interactive)
+  (let* ((dt (org-read-date))
+         (year (string-to-number (substring dt 0 4)))
+         (month (string-to-number (substring dt 5 7)))
+         (day (string-to-number (substring dt 8 10))))
+    (format-time-string "%Y-%m-%d %A" (org-encode-time 0 0 0 day month year))))
+
+;; keybinding
+(map! :after org
+      :map org-mode-map
+      :localleader
+      (:prefix ("ö" . "test")
+       "h" #'my/org-insert-datetree-heading))
 #+end_src
+
 *** Die ~after!~-Sektion
 Viele Dinge müssen erst geladen werden, nachdem =org= geladen wurde. Damit in den Codebeispielen oben nicht immer =after!=-Makros notwendig sind, werden sie hier alle per noweb in einem zusammengefasst.
 
@@ -615,8 +648,8 @@ Viele Dinge müssen erst geladen werden, nachdem =org= geladen wurde. Damit in d
   <<ob-xquery>>
   <<ox-twiki>>
   <<ox-gfm>>
+  <<my/org-insert-datetree-heading>>
   <<local-org-extract-src-content>>
-  <<tree-slide>>
   )
 #+end_src
 ** plantuml
@@ -664,6 +697,14 @@ Don't use =scheme-mode=.
 
 #+RESULTS:
 : racket
+*** Formatter
+Offenbar funktioniert die default Zeilenbreite nicht, daher:
+
+#+begin_src emacs-lisp :tangle no
+(after! racket-mode (add-to-list 'apheleia-formatters '(raco-fmt "raco" "fmt" "--width" "80")))
+#+end_src
+
+#+RESULTS:
 
 ** shell
 *** externe Abhängigkeiten
@@ -708,7 +749,9 @@ Die Einrückungen in der Standardeinstellung funktionieren wirklich (alles unter
       :map nxml-mode-map
       :localleader
       (:prefix ("t" . "test")
-       "t" #'run-xspec-on-file))
+       "t" #'run-xspec-on-file
+       "b" #'browse-xspec-report-url
+       "r" #'rerun-last-xspec-test))
 #+end_src
 
 *** LSP
@@ -739,21 +782,53 @@ Das Schema für XSpec ist vorhanden und kann =nXml-mode= zur Verfügung gestellt
 (after! nxml-mode
   (add-to-list 'rng-schema-locating-files "~/opt/xspec/editors/emacs/schemas.xml")
   (add-to-list 'rng-preferred-prefix-alist '("http://www.jenitennison.com/xslt/xspec" . "x"))
-  <<run-xspec-on-file>>)
+  (setq last-xspec-test nil)
+  <<run-xspec-on-file>>
+  <<browse-xspec-report-url>>)
 #+end_src
 
 Damit ich xspec mit der gerade geöffneten Datei aufrufen kann, verwende ich diese Funktion:
 #+NAME: run-xspec-on-file
 #+begin_src elisp :tangle no
-(defun run-xspec-on-file ()
-  "Runs xspec on current file.
+(defun run-xspec-on-file (&optional xspec-file-name)
+  "Runs xspec on current FILE. If FILE is `nil`, use current-buffer.
 If call with prefix arg, the *Async Shell Command* buffer is not displayed.
 "
   (interactive)
-  (let ((cmd (concat "xspec " (buffer-file-name))))
+  (let* ((fname (or xspec-file-name (buffer-file-name)))
+         (cmd (concat "XSPEC_HTML_REPORT_THEME='classic' xspec " fname)))
+    (setq last-xspec-test `(,current-prefix-arg ,fname))
     (if current-prefix-arg
-        (async-shell-command-no-window cmd)
-      (async-shell-command cmd))))
+        (async-shell-command-no-window cmd "*XSpec Output*")
+      (async-shell-command cmd "*XSpec Output*"))))
+#+end_src
+
+#+RESULTS: run-xspec-on-file
+: run-xspec-on-file
+
+#+name: rerun-last-xspec-test
+#+begin_src elisp
+(defun rerun-last-xspec-test ()
+  "Rerun last XSpec test. Message if there was none."
+  (interactive)
+  (if last-xspec-test
+    (let ((current-prefix-arg (car last-xspec-test))
+          (fname (cadr last-xspec-test)))
+      (run-xspec-on-file fname))
+    (message "No XSpec test to re-run.")))
+#+end_src
+
+#+RESULTS: rerun-last-xspec-test
+: rerun-last-xspec-test
+
+#+name: browse-xspec-report-url
+#+begin_src elisp :tangle no
+(defun browse-xspec-report-url ()
+  (interactive)
+  (with-current-buffer "*XSpec Output*"
+    (let ((bs (buffer-substring-no-properties (point-min) (point-max))))
+      (string-match "\nReport available at \\(.*\\)\n" bs)
+      (browse-url (concat "file://" (match-string 1 bs))))))
 #+end_src
 * Checkers
 ** spell
@@ -794,12 +869,12 @@ Die Version die aus den Paketquellen mit =apt= installiert wird, ist nicht mehr 
 *** ~load-path~
 Ich habe =mu= (und emacs) als snap installiert, daher muss der load-path angepasst werden.
 
-#+begin_src elisp
+#+begin_src elisp :tangle no
 (add-to-list 'load-path "/snap/maildir-utils/current/share/emacs/site-lisp/mu4e/")
 #+end_src
 
-#+begin_src elisp :tangle no
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e/")
+#+begin_src elisp
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/elpa-src/mu4e-1.10.8/")
 #+end_src
 
 *** Main view
@@ -807,7 +882,7 @@ Ich habe =mu= (und emacs) als snap installiert, daher muss der load-path angepas
 #+NAME: mu4e-maildir-shortcuts
 #+begin_src elisp :tangle no
 (setq mu4e-maildir-shortcuts
-        '(("/obvsg/INBOX" . ?i)
+        '(("/work/Inbox" . ?i)
           ("/schuhu/INBOX" . ?s)
           ("/gmail/INBOX" . ?g)
           ("/schuhu_mjn/INBOX" . ?m)
@@ -815,6 +890,10 @@ Ich habe =mu= (und emacs) als snap installiert, daher muss der load-path angepas
           ))
 
 #+end_src
+
+#+RESULTS: mu4e-maildir-shortcuts
+: ((/work/Inbox . 105) (/schuhu/INBOX . 115) (/gmail/INBOX . 103) (/schuhu_mjn/INBOX . 109) (/stefanschuh/INBOX . 112))
+
 **** Bullets
 Mir gefallen die bullets im main view noch weniger als die ursprünglichen Sternchen. Außerdem stehen im Bereich "Basics" immer noch die Sternchen. Also machen wir wieder Sternchen, damit es konsistent ist.
 #+NAME: bullets
@@ -834,14 +913,17 @@ Sobald ich das weiß, kann ich mich um ein anderes Symbol kümmern. So ist es in
  mu4e-use-fancy-chars nil ; don't use icons, they mess up the linespacing
  mu4e-attachment-dir "~/Downloads"
  mu4e-maildir (expand-file-name "~/Maildir")
- mu4e-get-mail-command "mbsync schuhu obvsg gmail stefanschuh"
- mu4e-update-interval 180 ;; check for mail every 3 minutes
+ mu4e-get-mail-command "mbsync work schuhu gmail stefanschuh"
+ mu4e-update-interval 120 ;; check for updates every n seconds
  sendmail-program (executable-find "msmtp")
  send-mail-function #'smtpmail-send-it
  message-sendmail-f-is-evil t
  message-sendmail-extra-arguments '("--read-envelope-from")
  message-send-mail-function #'message-send-mail-with-sendmail)
 #+end_src
+
+#+RESULTS: mail-general
+: message-send-mail-with-sendmail
 
 
 In der ursprünglichen Einstellung hat das Datum im header-view keinen Platz.
@@ -857,13 +939,13 @@ In der ursprünglichen Einstellung hat das Datum im header-view keinen Platz.
 *** Konten einrichten
 #+NAME: mail-accounts
 #+begin_src elisp :tangle no
-(set-email-account! "obvsg"
+(set-email-account! "work"
                     '((user-mail-address . "stefan.schuh@obvsg.at")
                       (user-full-name . "Stefan Schuh")
-                      (mu4e-drafts-folder . "/obvsg/Drafts")
-                      (mu4e-sent-folder . "/obvsg/Sent")
-                      (mu4e-trash-folder . "/obvsg/Trash")
-                      (mu4e-refile-folder . "/obvsg/Archiv")
+                      (mu4e-drafts-folder . "/Work/Drafts")
+                      (mu4e-sent-folder . "/Work/Sent")
+                      (mu4e-trash-folder . "/Work/Trash")
+                      (mu4e-refile-folder . "/Work/Archiv")
                       (mu4e-compose-signature . (concat
 
 "Stefan Schuh     Die Österreichische Bibliothekenverbund und Service\n"
@@ -883,11 +965,11 @@ In der ursprünglichen Einstellung hat das Datum im header-view keinen Platz.
                                                  "Maria-Pachleitner-Straße 51/10\n"
                                                  "8053 Graz"))))
 
-(set-email-account! "stefanschuh"
-                    '((mu4e-sent-folder . "/stefanschuh/Gesendet")
+(set-email-account! "Stefanschuh"
+                    '((mu4e-sent-folder . "/stefanschuh/Sent")
                       (mu4e-drafts-folder . "/stefanschuh/Drafts")
-                      (mu4e-trash-folder . "/stefanschuh/Papierkorb")
-                      (mu4e-refile-folder . "/stefanschuh/Archiv")
+                      (mu4e-trash-folder . "/stefanschuh/Trash")
+                      (mu4e-refile-folder . "/stefanschuh/Archive")
                       (user-mail-address . "email@stefanschuh.at")
                       (user-full-name . "Stefan Schuh")
                       (mu4e-compose-signature . (concat
@@ -896,7 +978,7 @@ In der ursprünglichen Einstellung hat das Datum im header-view keinen Platz.
                                                  "8053 Graz"))))
 
 (set-email-account! "mjn-schuhu"
-                    '((mu4e-sent-folder . "schuhu_mjn/Gesendet")
+                    '((mu4e-sent-folder . "schuhu_mjn/Sent")
                       (mu4e-drafts-folder . "/schuhu_mjn/Drafts")
                       (mu4e-trash-folder . "/schuhu_mjn/Papierkorb")
                       (mu4e-refile-folder . "/schuhu_mjn/Archiv")
@@ -914,6 +996,9 @@ In der ursprünglichen Einstellung hat das Datum im header-view keinen Platz.
                       (mu4e-trash-folder ."/gmail/trash")
                       ))
 #+end_src
+
+#+RESULTS: mail-accounts
+: #s(mu4e-context "gmail" #[nil ((mu4e-message "Switched to %s" label)) ((label . "gmail"))] #[nil ((setq +mu4e-personal-addresses nil) (if (fboundp 'mu4e-clear-caches) (mu4e-clear-caches))) (t)] #[(msg) ((if msg (progn (string-prefix-p (format "/%s" label) (mu4e-message-field msg :maildir) t)))) ((label . "gmail"))] ((user-mail-address . "stefan.schuh.ba@gmail.com") (user-full-name . "Stefan Schuh") (mu4e-drafts-folder . "/gmail/drafts") (mu4e-sent-folder . "/gmail/sent") (mu4e-trash-folder . "/gmail/trash")))
 
 *** Kontexte
 Hier muss in Doom Emacs offenbar nicht so viel gemacht werden. Durch das einrichten der Accounts mit dem Makro ~set-email-account!~ funktioniert das Umschalten der Kontexte ohne weitere Konfiguration bisher völlig zu meiner Zufriedenheit.
@@ -982,6 +1067,51 @@ In =init.el= habe ich ~biblio~ aktiviert. Hier nun die entsprechende Konfigurati
 (setq! citar-bibliography '("~/Nextcloud/literatur/bibliographie.bib")
        citar-library-paths '("~/Nextcloud/literatur/files/")
        citar-notes-paths '("~/Nextcloud/literatur/notes/"))
+#+end_src
+
+Und für die Symbole im citar-ui:
+#+begin_src elisp
+(defvar citar-indicator-files-icons
+  (citar-indicator-create
+   :symbol (nerd-icons-faicon
+            "nf-fa-file_o"
+            :face 'nerd-icons-green
+            :v-adjust -0.1)
+   :function #'citar-has-files
+   :padding "  " ; need this because the default padding is too low for these icons
+   :tag "has:files"))
+(defvar citar-indicator-links-icons
+  (citar-indicator-create
+   :symbol (nerd-icons-faicon
+            "nf-fa-link"
+            :face 'nerd-icons-orange
+            :v-adjust 0.01)
+   :function #'citar-has-links
+   :padding "  "
+   :tag "has:links"))
+(defvar citar-indicator-notes-icons
+  (citar-indicator-create
+   :symbol (nerd-icons-codicon
+            "nf-cod-note"
+            :face 'nerd-icons-blue
+            :v-adjust -0.3)
+   :function #'citar-has-notes
+   :padding "    "
+   :tag "has:notes"))
+(defvar citar-indicator-cited-icons
+  (citar-indicator-create
+   :symbol (nerd-icons-faicon
+            "nf-fa-circle_o"
+            :face 'nerd-icons-green)
+   :function #'citar-is-cited
+   :padding "  "
+   :tag "is:cited"))
+
+(setq citar-indicators
+      (list citar-indicator-files-icons
+            citar-indicator-links-icons
+            citar-indicator-notes-icons
+            citar-indicator-cited-icons))
 #+end_src
 ** dired
 *** =dired-listing-switches=
@@ -1093,10 +1223,15 @@ Ebib starten etc.:
 
 ** magit
 *** forge
-Um auf gitlab-issues etc. zuzugreifen braucht es ein bisschen config.
+Um auf gitlab-issues etc. zuzugreifen braucht es ein bisschen config. Doku siehe hier: https://docs.magit.vc/forge/Setup-for-Another-Gitlab-Instance.html
 
 Zuallererst muss ~(git +forge)~ in ~init.el~ gesetzt sein.
 
+Dann muss ~git~ richtig konfiguriert werden, damit der user auch vorhanden ist:
+
+#+begin_src shell :tangle no
+git config --global gitlab.gitlab.obvsg.at/api/v4.user ss
+#+end_src
 
 **** gitlab.obvsg.at als zu ~forge-alist~ hinzufügen
 Das gitlab der obvsg ist natürlich nicht standardmäßig in ~forge-alist~ vorhanden, also fügen wir es hinzu:
@@ -1127,7 +1262,8 @@ In ~Doom Emacs~ ist hierfür ~.emacs.d/.local/state/authinfo.gpg~ vorgesehen. Da
 Daher kommen die Daten in ~~/.netrc~, die ich eh für ~smtpmail~ in Verwendung habe. Das muss dann aber auch gesagt werden:
 
 #+begin_src elisp
-(add-to-list 'auth-sources "~/.netrc")
+(require 'auth-source)
+(setq auth-sources '("~/.netrc"))
 #+end_src
 ** mrk2xml
 *** *OBSOLET* Externes Python-Script
@@ -1274,6 +1410,8 @@ t)
 (package! dokuwiki-mode)
 (package! biblio)
 (package! ebib)
+(package! ox-ipynb
+  :recipe (:host github :repo "jkitchin/ox-ipynb"))
 (package! ox-wk)
 (package! ox-gfm)
 (package! ox-reveal)
@@ -1284,4 +1422,8 @@ t)
 (package! jest-test-mode)
 (package! geiser-racket)
 (package! keycast)
+(package! rnc-mode)
+(package! nov)
+;; (package! xslide
+;;   :recipe (:host github :repo "tkg/xslide"))
 #+end_src

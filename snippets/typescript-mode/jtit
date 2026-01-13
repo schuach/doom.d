@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: jest it() for analyzeGroup
+# key: jtit
+# condition: t
+# --
+  it('handles $1', () => {
+    const rawGroup = {start: true, text: '$2'};
+    const expected = {start: true, open: false, vol: '$3', yr: '$0'};
+    expect(analyzeGroup(rawGroup)).toEqual(expected);
+  });

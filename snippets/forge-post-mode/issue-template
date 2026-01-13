@@ -1,0 +1,11 @@
+# key: iitl
+# name: issue-template
+# --
+# mapping von \`export_buch_complete.${1:field}\`
+
+Spezifikation: [export_buch_complete#${1:$(downcase yas-text)}](https://gitlab.obvsg.at/AlmaMigration/literaturhaus/-/wikis/mappings/buch_complete#${1:$(downcase yas-text)})
+
+$0
+
+- [ ] Tests
+- [ ] Implementierung

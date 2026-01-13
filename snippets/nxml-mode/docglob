@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: doc:doc global
+# uuid:
+# key: docglob
+# condition: t
+# --
+<doc:doc scope="global">
+  <doc:title>$1</doc:title>
+  <doc:includeMd href="$2" />
+  <doc:desc>$0</doc:desc>
+</doc:doc>

@@ -1,0 +1,5 @@
+# key: ümdf
+# name: sxml-datafield
+# --
+(datafield (@ (tag "$1") (ind1 "$2") (ind2 "$3"))
+           (subfield (@ (code "$4")) $0))

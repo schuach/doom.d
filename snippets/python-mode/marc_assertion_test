@@ -1,0 +1,8 @@
+# key: mtst
+# name: marc assertion test
+# --
+assert $1.tag == "$2"
+assert $1.indicators == ["$3", "$4"]
+assert $1.subfields == [
+       Subfield(code="$5", value="$0")
+]

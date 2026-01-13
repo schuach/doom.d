@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: apply-templates-empty
+# uuid:
+# key: xat
+# condition: t
+# --
+<xsl:apply-templates />

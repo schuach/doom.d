@@ -1,9 +1,0 @@
-.DS_Store
-.idea
-*.log
-tmp/
-.directory
-
-config.el
-packages.el
-custom.el

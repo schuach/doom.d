@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: xsl:variable
+# key: xvar
+# condition: t
+# --
+<xsl:variable name="$1" select="$0" />

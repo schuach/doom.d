@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: source-python-noweb
+# uuid:
+# key: <spn
+# condition: t
+# --
+#+begin_src python :noweb yes
+$0
+#+end_src

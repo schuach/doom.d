@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: marcDatafield
+# key: zmdf
+# condition: t
+# --
+{
+  tag: '$1',
+  ind1: '$2',
+  ind2: '$3',
+  subfields: [
+    $0
+  ],
+},

@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: module+ test
+# uuid:
+# key: testmod
+# condition: t
+# --
+(module+ test
+  $0)

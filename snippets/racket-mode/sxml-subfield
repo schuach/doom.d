@@ -1,0 +1,4 @@
+# key: ümsf
+# name: sxml-subfield
+# --
+(subfield (@ (code "$1")) $0)

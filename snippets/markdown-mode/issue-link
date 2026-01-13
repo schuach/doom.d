@@ -1,0 +1,4 @@
+# key: issl
+# name: issue-link
+# --
+[Issue #${1:issno}](https://gitlab.obvsg.at/AlmaMigration/literaturhaus/-/issues/$1)

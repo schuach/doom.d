@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: marcSubfield
+# key: zmsf
+# condition: t
+# --
+{code: '$1', value: '$2'},$0
